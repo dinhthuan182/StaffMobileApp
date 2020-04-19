@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import { StyleSheet, SafeAreaView, FlatList, View } from 'react-native';
-import Constants from 'expo-constants';
+import { StyleSheet, FlatList, View } from 'react-native';
 
 import TableCell from '../Cells/TableCell'
 
@@ -21,7 +20,6 @@ const currentTableList = [
 export default class Tables extends Component {
     render() {
         return (
-            <SafeAreaView style={styles.container}>
                 <FlatList
                     data={currentTableList}
                     numColumns = {2}
@@ -32,7 +30,6 @@ export default class Tables extends Component {
                     keyExtractor={item => item.id}
                     contentContainerStyle = {{marginHorizontal: 8}}
                 />
-            </SafeAreaView>
         );
     }
 }
@@ -40,7 +37,6 @@ export default class Tables extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: Constants.statusBarHeight,
     },
     cell: {
         flex: 1,

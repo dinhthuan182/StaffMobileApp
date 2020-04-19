@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, TextInput } from 'react-native';
 import Icons from 'react-native-vector-icons/AntDesign';
 
 export default function ProductCell(props) {
@@ -32,41 +32,50 @@ export default function ProductCell(props) {
                 stateChange == 1 ? styles.updateState : 
                     styles.newState
             ]} >
-            
-            <Image style = {styles.img}/>
-
-            <View style = {styles.contentView}>
-                <Text style = {styles.nameText}>{product.name}</Text>
+            <View style = {styles.productView}>
                 
-                {product.salePrice == 0 ? 
-                    <Text style = {styles.priceText}>$ {product.price}</Text> 
-                    :
-                    <View style = {styles.priceView}>
-                        <Text style = {styles.priceText}>$ {product.salePrice} </Text>
-                        <Text style = {styles.salePriceText}>$ {product.price}</Text>
-                    </View>
-                }
+                <Image style = {styles.img}/>
 
-                <View style = {styles.quantityView}>
-                    <TouchableWithoutFeedback
-                        onPress = { handleMinus} >
-                        <Icons name = {'minuscircleo'}
-                            size = {20}
-                            color = {'rgb(0, 0, 0)'}
-                            style = {styles.quantityIcon} />
-                    </TouchableWithoutFeedback>
+                <View style = {styles.contentView}>
+                    <Text style = {styles.nameText}>{product.name}</Text>
+                    
+                    {product.salePrice == 0 ? 
+                        <Text style = {styles.priceText}>$ {product.price}</Text> 
+                        :
+                        <View style = {styles.priceView}>
+                            <Text style = {styles.priceText}>$ {product.salePrice} </Text>
+                            <Text style = {styles.salePriceText}>$ {product.price}</Text>
+                        </View>
+                    }
 
-                    <Text style = {styles.quantityText} >{quantity}</Text>
+                    <View style = {styles.quantityView}>
+                        <TouchableWithoutFeedback
+                            onPress = { handleMinus} >
+                            <Icons name = {'minuscircleo'}
+                                size = {20}
+                                color = {'rgb(0, 0, 0)'}
+                                style = {styles.quantityIcon} />
+                        </TouchableWithoutFeedback>
 
-                    <TouchableWithoutFeedback
-                        onPress = { handleAdd } >
-                        <Icons name = {'pluscircleo'}
-                            size = {20}
-                            color = {'rgb(0, 0, 0)'}
-                            style = {styles.quantityIcon} />
-                    </TouchableWithoutFeedback>
+                        <Text style = {styles.quantityText} >{quantity}</Text>
+
+                        <TouchableWithoutFeedback
+                            onPress = { handleAdd } >
+                            <Icons name = {'pluscircleo'}
+                                size = {20}
+                                color = {'rgb(0, 0, 0)'}
+                                style = {styles.quantityIcon} />
+                        </TouchableWithoutFeedback>
+                    </View> 
                 </View>
                 
+            </View>
+            <View style = {styles.noteView}>
+                <Text style = { styles.noteTitle}>Note: </Text>
+                <TextInput placeholder = {'note'}
+                    multiline
+                    editable = {stateChange == 0 ? false : true}
+                    style = {styles.noteInput} />
             </View>
         </View>
     );
@@ -78,6 +87,8 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         borderRadius: 10,
         padding: 10,
+    },
+    productView: {
         flexDirection: 'row',
     },
     img: {
@@ -87,7 +98,6 @@ const styles = StyleSheet.create({
     },
     contentView: {
         marginHorizontal: 10,
-        marginBottom: 10,
         justifyContent: 'space-between',
     },
     nameText: {
@@ -129,5 +139,15 @@ const styles = StyleSheet.create({
     },
     updateState: {
         borderColor: 'rgb(255, 204, 0)'
+    },
+    noteView: {
+        flexDirection: 'row',
+    },
+    noteTitle: {
+        fontSize: 16
+    },
+    noteInput: {
+        fontSize: 16,
+        width: '88%'
     },
 })
