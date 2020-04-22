@@ -1,16 +1,17 @@
 import React, {Component} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
-import Icons from 'react-native-vector-icons/Ionicons'
+import { StyleSheet, Text, View } from 'react-native';
 
-export default class Home extends Component {
+import { useAuth } from "../../Providers/Auth";
 
-    render() {
-        return (
-            <View style = {styles.container}>
-                <Text style = {{fontSize: 40}}> Home</Text>
-            </View>
-        );
-    }
+export default function Home(props) {
+    const {navigate} = props.navigation;
+
+    // const user = state.user;
+    return (
+        <View style = {styles.container}>
+            <Text style = {{fontSize: 40}}>Home</Text>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({

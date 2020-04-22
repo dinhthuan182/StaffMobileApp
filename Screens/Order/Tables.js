@@ -17,21 +17,19 @@ const currentTableList = [
     {id: 10, avaliable: false},
     {id: 11, avaliable: false}
 ]
-export default class Tables extends Component {
-    render() {
-        return (
-                <FlatList
-                    data={currentTableList}
-                    numColumns = {2}
-                    renderItem={({ item }) =>
-                        <View style = {styles.cell}>
-                            <TableCell table={item} />
-                        </View>}
-                    keyExtractor={item => item.id}
-                    contentContainerStyle = {{marginHorizontal: 8}}
-                />
-        );
-    }
+export default function Tables(props) {
+    return (
+        <FlatList
+            data={currentTableList}
+            numColumns = {2}
+            renderItem={({ item }) =>
+                <View style = {styles.cell}>
+                    <TableCell table={item} />
+                </View>}
+            keyExtractor={item => item.id}
+            contentContainerStyle = {{marginHorizontal: 8}}
+        />
+    );
 }
 
 const styles = StyleSheet.create({

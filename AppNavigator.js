@@ -10,6 +10,7 @@ import Tables from './Screens/Order/Tables'
 import TableDetail from './Screens/Order/TableDetail'
 import Menu from './Screens/Order/Menu'
 import Profile from './Screens/Profile/Profile' 
+import AuthLoading from './Screens/AuthLoading'
 
 const OrderStack = createStackNavigator();
 
@@ -17,7 +18,7 @@ const MainTab = createBottomTabNavigator()
 
 const AuthStack = createStackNavigator();
 
-function setOrderStack() {
+function setOrderStack(props) {
     return (
         <OrderStack.Navigator initialRouteName = "Tables" >
             <OrderStack.Screen name = "Tables" component = {Tables} />
@@ -28,30 +29,30 @@ function setOrderStack() {
 }
 
 
-function setMainTab() {
+function setMainTab(props) {
     return(
         <MainTab.Navigator 
-        screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-              let iconName;
-  
-              if (route.name === 'Home') {
-                iconName = focused
-                  ? 'ios-information-circle'
-                  : 'ios-information-circle-outline';
-              } else if (route.name === 'Tables') {
-                iconName = focused ? 'ios-list-box' : 'ios-list';
-              } else if (route.name === 'Profile') {
-                iconName = focused ? 'person' : 'person-outline';
-                return <MaterialIcons name={iconName} size={size} color={color} />;
-              }
-              return <Ionicons name={iconName} size={size} color={color} />;
-            },
-          })}
-          tabBarOptions={{
-            activeTintColor: 'rgb(134, 85, 252)',
-            inactiveTintColor: 'gray',
-          }}
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    if (route.name === 'Home') {
+                        iconName = focused
+                        ? 'ios-information-circle'
+                        : 'ios-information-circle-outline';
+                    } else if (route.name === 'Tables') {
+                        iconName = focused ? 'ios-list-box' : 'ios-list';
+                    } else if (route.name === 'Profile') {
+                        iconName = focused ? 'person' : 'person-outline';
+                        return <MaterialIcons name={iconName} size={size} color={color} />;
+                    }
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                },
+            })}
+            tabBarOptions={{
+                activeTintColor: 'rgb(134, 85, 252)',
+                inactiveTintColor: 'gray',
+            }}
         >
             <MainTab.Screen name = "Home" component = {Home} />
             <MainTab.Screen name = "Tables" component = {setOrderStack} />
@@ -60,12 +61,13 @@ function setMainTab() {
     );
 }
 
-export default function setAuthStack() {
+export default function setAuthStack(props) {
     return (
         <AuthStack.Navigator 
-          initialRouteName = "Login"
+          initialRouteName = "Loading"
           screenOptions={{
             headerShown: false}} >
+            <AuthStack.Screen name = "Loading" component = {AuthLoading} />
             <AuthStack.Screen name = "Login" component = {Login} />
             <AuthStack.Screen name = "Main" component = {setMainTab} />
         </AuthStack.Navigator>
