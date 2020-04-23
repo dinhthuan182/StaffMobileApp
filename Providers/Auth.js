@@ -6,7 +6,7 @@ import axios from "axios";
 import reducer, {initialState, LOGGED_IN, LOGGED_OUT} from "../Reducer";
 
 // CONFIG KEYS [Storage Keys]
-export const TOKEN_KEY = 'token';
+export const TOKEN_KEY = 'access_token';
 export const USER_KEY = 'user';
 export const keys = [TOKEN_KEY, USER_KEY];
 
@@ -25,8 +25,7 @@ function AuthProvider(props) {
             let user = await AsyncStorage.getItem(USER_KEY);
             user = JSON.parse(user);
             if (access_token !== null && user!== null) await handleLogin({access_token, user});
-            else await handleLogout();
-
+            // else await handleLogout();
             return {access_token, user};
         } catch (error) {
             throw new Error(error)
@@ -37,14 +36,14 @@ function AuthProvider(props) {
     const handleLogin = async (data) => {
         try{
             //STORE DATA
-            let { user, access_token, expires_in} = data;
+            let { user, access_token} = data;
             let data_ = [[USER_KEY, JSON.stringify(user)], [TOKEN_KEY, access_token]];
             await AsyncStorage.multiSet(data_);
 
             //AXIOS AUTHORIZATION HEADER
             axios.defaults.headers.common["Authorization"] = `${data.access_token}`;
             //DISPATCH TO REDUCER
-            dispatch({type: LOGGED_IN, user:data.user});
+            dispatch({type: LOGGED_IN, token: `${data.access_token}`, user: data.user});
         }catch (error) {
             throw new Error(error);
         }

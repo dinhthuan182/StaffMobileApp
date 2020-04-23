@@ -1,15 +1,21 @@
-import React, {Component} from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useAuth } from "../../Providers/Auth";
 
 export default function Home(props) {
     const {navigate} = props.navigation;
+    const {state} = useAuth();
 
-    // const user = state.user;
+
+    useEffect(() => {
+        console.log(state)
+      }, [])
+
+    
     return (
         <View style = {styles.container}>
-            <Text style = {{fontSize: 40}}>Home</Text>
+            <Text style = {{fontSize: 40}}>{state.user.name}</Text>
         </View>
     );
 }

@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
 import Icons from 'react-native-vector-icons/Ionicons'
+
+import Splash from '../Splash'
 
 import * as api from "../../Services/Auth";
 import { useAuth } from "../../Providers/Auth";
@@ -17,36 +19,53 @@ export default function Login(props) {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
-    const { handleLogin } = useAuth();
+    const {state, handleLogin } = useAuth();
 
     showPassHandle = () => {
         setHidePass(!hidePass);
     }
 
     onLoginSubmit = async () => {
+        setLoading(true);
         if (username == "" || password == "") {
             setError("Please enter your account and password");
             return
         }
-        setLoading(true);
 
         try {
             let response = await api.login(username, password);
             await handleLogin(response);
-            setLoading(false);
 
             //check if username is null
             let user = (response.user.username !== null);
+            setLoading(false);
             if (user) navigate('Main');
+            
         } catch (error) {
             setLoading(false)
+            setPassword("")
             setError("Username and password are incorrect")
         }
     }
 
-    return (
+    useEffect(() => {
+        // Fetch the token from storage then navigate to our appropriate place
+        const bootstrapAsync = async () => {
+            const isLoggedIn = state.isLoggedIn;
+            if (isLoggedIn == true) {
+                navigate('Main')
+            }
+        };
+    
+        bootstrapAsync();
+      }, []);
+    
+
+    return ( 
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={styles.container}>
+                {loading ? <Splash/>: null }
+                
                 <Text style = {styles.appTitle}>Cafe Staff App</Text>
             
                 <View style = {styles.inputContainer} >
@@ -55,6 +74,7 @@ export default function Login(props) {
                         color= {'rgba(255, 255, 255, 0.7)'}
                         style={styles.inputIcon} />
                     <TextInput
+                        value = {username}
                         onChangeText = {(text) => {
                             setUsername(text)
                             setError("")
@@ -70,6 +90,7 @@ export default function Login(props) {
                         color= {'rgba(255, 255, 255, 0.7)'}
                         style={styles.inputIcon} />
                     <TextInput
+                        value = {password}
                         onChangeText = {(text) => {
                             setPassword(text)
                             setError("")
@@ -97,8 +118,7 @@ export default function Login(props) {
                     <Text style={styles.btnLoginText}>Login</Text>
                 </TouchableOpacity>
             </View>
-            
-        </TouchableWithoutFeedback>
+         </TouchableWithoutFeedback>
     );
 }
 

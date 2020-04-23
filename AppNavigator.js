@@ -10,7 +10,8 @@ import Tables from './Screens/Order/Tables'
 import TableDetail from './Screens/Order/TableDetail'
 import Menu from './Screens/Order/Menu'
 import Profile from './Screens/Profile/Profile' 
-import AuthLoading from './Screens/AuthLoading'
+
+import { useAuth } from "./Providers/Auth";
 
 const OrderStack = createStackNavigator();
 
@@ -62,14 +63,18 @@ function setMainTab(props) {
 }
 
 export default function setAuthStack(props) {
+    const {state} = useAuth();
+    const isLoggedIn = state.isLoggedIn;
     return (
         <AuthStack.Navigator 
-          initialRouteName = "Loading"
           screenOptions={{
             headerShown: false}} >
-            <AuthStack.Screen name = "Loading" component = {AuthLoading} />
-            <AuthStack.Screen name = "Login" component = {Login} />
-            <AuthStack.Screen name = "Main" component = {setMainTab} />
+                {isLoggedIn ? ( 
+                    <AuthStack.Screen name = "Main" component = {setMainTab} />
+                    ): (
+                    <AuthStack.Screen name = "Login" component = {Login} />
+                    )
+                } 
         </AuthStack.Navigator>
     );
 }

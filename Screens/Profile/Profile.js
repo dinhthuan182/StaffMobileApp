@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
 import Icons from 'react-native-vector-icons/AntDesign'
@@ -20,17 +20,20 @@ const timeSheet = [
 
 export default function Profile(props) {
 
-    const {navigate} = props.navigation;
-
     const {state, handleLogout} = useAuth();
-    const user = state.user;
+    const {isLoggedIn, user} = state;
 
     return (
         <SafeAreaView style = { styles.container} >
-            <View style = {styles.headerProfile}>
-                <Text style = {styles.UsernameText}>{user.name}</Text>
-                <Text style = {styles.roleText}>{user.role}</Text>
-            </View>
+            
+            {isLoggedIn ? ( 
+                <View style = {styles.headerProfile}>
+                    <Text style = {styles.UsernameText}>{user.name}</Text>
+                    <Text style = {styles.roleText}>{user.role}</Text>
+                </View>
+                ) : (null)
+            } 
+            
             <Text style = {styles.timeSheetTitle}>Schedule</Text>
             <View style = {styles.timeLineView}>
                 <TouchableWithoutFeedback>
@@ -59,7 +62,6 @@ export default function Profile(props) {
                 <TouchableOpacity 
                     onPress={() => {
                         handleLogout();
-                        navigate('Login');
                     }}
                     style = {styles.logoutView}>
                     <Icons name = {'logout'}

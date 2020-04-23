@@ -4,6 +4,7 @@ export const LOGGED_OUT = `auth/LOGGED_OUT`;
 
 export const  initialState = {
     isLoggedIn: false,
+    token: '',
     user: null
 };
 
@@ -11,13 +12,12 @@ export const  initialState = {
 const authReducer = (state = initialState, action) => {
     switch (action.type) {
         case LOGGED_IN:{
-            let { user } = action;
+            let { token, user } = action;
 
-            return {...state, isLoggedIn: true, user};
+            return {...state, isLoggedIn: true, token, user};
         }
 
         case LOGGED_OUT:{
-            console.log(state)
             return {...state, ...initialState};
         }
 
