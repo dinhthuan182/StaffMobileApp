@@ -4,6 +4,7 @@ import Constants from 'expo-constants';
 import Icons from 'react-native-vector-icons/AntDesign'
 
 import { useAuth } from "../../Providers/Auth";
+import * as api from '../../Services/Auth'
 
 import TimeSheetCell from '../Cells/TimeSheetCell'
 
@@ -61,6 +62,7 @@ export default function Profile(props) {
             <View style = {styles.headerProfile}>
                 <TouchableOpacity 
                     onPress={() => {
+                        api.logout();
                         handleLogout();
                     }}
                     style = {styles.logoutView}>

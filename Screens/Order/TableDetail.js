@@ -1,65 +1,73 @@
-import React, {Component} from 'react';
+import React, {useEffect} from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, Text } from 'react-native';
-import Constants from 'expo-constants';
 
 import ProductCell from '../Cells/ProductCell'
 
-const productList = [
-    {id: 0, name: "product 0", urlImage: "", price: 10000, salePrice: 0, quantity: 1, type: "Food"},
-    {id: 1, name: "product 1", urlImage: "", price: 11000, salePrice: 9000, quantity: 1, type: "Food"},
-    {id: 2, name: "product 2", urlImage: "", price: 12000, salePrice: 0, quantity: 6, type: "Food"},
-    {id: 3, name: "product 3", urlImage: "", price: 13000, salePrice: 0, quantity: 1, type: "Food"},
-    {id: 4, name: "product 4", urlImage: "", price: 14000, salePrice: 11500, quantity: 2, type: "Food"},
-    {id: 5, name: "product 5", urlImage: "", price: 15000, salePrice: 0, quantity: 1, type: "Food"},
-    {id: 6, name: "product 6", urlImage: "", price: 16000, salePrice: 14999, quantity: 1, type: "Food"},
-    {id: 7, name: "product 7", urlImage: "", price: 17000, salePrice: 0, quantity: 1, type: "Food"},
-    {id: 8, name: "product 8", urlImage: "", price: 18000, salePrice: 0, quantity: 1, type: "Food"},
-    {id: 9, name: "product 9", urlImage: "", price: 19000, salePrice: 0, quantity: 1, type: "Food"},
-    {id: 10, name: "product 10", urlImage: "", price: 20000, salePrice: 0, quantity: 1, type: "Food"},
-]
+import * as api from '../../Services/Order'
 
-export default class TableDetail extends Component {
-    constructor (props) {
-        super(props)
-        this.state = {
-            table: props
-        }
+export default function TableDetail(props) {
+    const {navigation, route} = props;
+    const {table, detail, newOrder} = route.params
+    const {current_sale_total, product_list, created_at, created_by_name} = detail
+    
+    var today = new Date();
+    var dd = String(today.getDate()).padStart(2, '0');
+    var mm = String(today.getMonth() + 1).padStart(2, '0');
+    var yyyy = today.getFullYear();
+    var hours =String(today.getHours()).padStart(2, '0');
+    var min =String(today.getMinutes()).padStart(2, '0'); 
+
+    today = hours +':'+ min +' '+ mm +'-'+ dd +'-'+ yyyy;
+
+    useEffect(() => {
+        navigation.setParams({ submit: submitOrders });
+
+        fetchData()
+    }, [])
+
+    const submitOrders = () => {
+        console.log('submitOrders')
     }
 
-    render() {
-        return (
-            <SafeAreaView style = { styles.container} >
-                <View style = {styles.headerMenu}>
-                    <View>
-                        <Text style = {styles.totalBillText}>Total: 500000 vnd</Text>
-                        <Text>Create at: 10:00 AM</Text>
-                    </View>
-                    <TouchableOpacity 
-                        activeOpacity = {0.7}
-                        style = {styles.btnMenu} >
-                        <Text style = {styles.btnMenuText}>Open Menu</Text>
-                    </TouchableOpacity>
+    const fetchData = async () => {
+        console.log("see data:" + newOrder);
+        // setLoading(true)
+        // let allTable = await api.getTableDetail(table.id);
+        // setLoading(false)
+    }
+
+    return (
+        <SafeAreaView style = { styles.container} >
+            <View style = {styles.headerMenu}>
+                <View>
+                <Text style = {styles.totalBillText}>Total: $ {current_sale_total == null ? 0: current_sale_total} <Text style = {styles.smallBillText}>VND</Text></Text>
+                    <Text>Create at: {created_at == null ? today : created_at}</Text>
                 </View>
-                <FlatList
-                    data={productList}
-                    numColumns = {1}
-                    renderItem={({ item }) =>
-                        <View style = {styles.cell}>
-                            <ProductCell product = {item} />
-                        </View>}
-                    keyExtractor={item => item.id}
-                    contentContainerStyle = {{marginHorizontal: 8}}
-                    />
-            </SafeAreaView>
-        );
-    }
+                <TouchableOpacity 
+                    onPress = {() => navigation.navigate('Menu', {titleHeader: `Table ${table.name}`})}
+                    activeOpacity = {0.7}
+                    style = {styles.btnMenu} >
+                    <Text style = {styles.btnMenuText}>Open Menu</Text>
+                </TouchableOpacity>
+            </View>
+            <FlatList
+                data={product_list}
+                numColumns = {1}
+                renderItem={({ item }) =>
+                    <View style = {styles.cell}>
+                        <ProductCell product = {item} />
+                    </View>}
+                keyExtractor={item => `${item.id}`}
+                contentContainerStyle = {{marginHorizontal: 8}}
+                />
+        </SafeAreaView>
+    );
     
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: Constants.statusBarHeight
     },
     cell: {
         flex: 1,
@@ -75,18 +83,21 @@ const styles = StyleSheet.create({
     totalBillText: {
         fontSize: 20
     },
+    smallBillText: {
+        fontSize: 15,
+    },
     btnMenu: {
         borderRadius: 5,
         backgroundColor: 'rgb(134, 85, 252)',
-        height: 45,
+        height: 40,
         justifyContent: 'center',
        
     },
     btnMenuText: {
         color: 'white',
-        fontSize: 20,
+        fontSize: 16,
         fontWeight: "bold",
         fontStyle: 'italic',
-        paddingHorizontal: 20
+        paddingHorizontal: 10
     },
 })

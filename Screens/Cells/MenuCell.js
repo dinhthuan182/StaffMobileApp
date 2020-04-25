@@ -2,58 +2,56 @@ import React, {useState} from 'react';
 import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import Icons from 'react-native-vector-icons/AntDesign';
 
-export default function MenuCell(props) {
-    const { product } = props;
+import * as C from '../../Constants'
 
-    const [stateChoice, setStateChoice] = useState(false)
+export default function MenuCell(props) {
+    const { product, onOrdersChange } = props;
+
     const [quantity, setQuantity] = useState(product.quantity)
 
     const handleMinus = () => {
-        const newValue = quantity - 1;
-        
-        if (newValue > product.quantity) {
-            setQuantity(newValue);
-            setStateChoice(true);
-        } else {
-            setQuantity(product.quantity);
-            setStateChoice(false);
+        if (quantity > 0) {
+            setQuantity(quantity -1);
+            onOrdersChange(product.id, quantity-1);
         }
     }
 
     const handleAdd = () => {
-        const newValue = quantity + 1;
-        setQuantity(newValue);
-        setStateChoice(1);
+        setQuantity(quantity+1);
+        onOrdersChange(product.id, quantity+1)
     }
 
     const selectedCell = () => {
-        if (stateChoice == true) {
+        if (quantity > 0) {
             setQuantity(0)
+            onOrdersChange(product.id, 0)
         } else {
             setQuantity(1)
+            onOrdersChange(product.id, 1)
         }
-        setStateChoice(!stateChoice)
+        
     }
 
     return (
         <TouchableOpacity activeOpacity = {0.7}
             onPress = { selectedCell }>
             <View style = { [styles.container, 
-                stateChoice == false ? styles.defaultState : styles.choiceState
+                quantity > 0 ? styles.choiceState : styles.defaultState
                 ]} >
                 
-                <Image style = {styles.img}/>
+                <Image style = {styles.img}
+                    source={{
+                        uri: C.GET_IMAGE(product.url),
+                    }} 
+                />
 
                 <View style = {styles.contentView}>
                     <Text style = {styles.nameText}>{product.name}</Text>
                     
-                    {product.salePrice == 0 ? 
+                    {product.salePrice == null ? 
                         <Text style = {styles.priceText}>$ {product.price}</Text> 
                         :
-                        <View style = {styles.priceView}>
-                            <Text style = {styles.priceText}>$ {product.salePrice} </Text>
-                            <Text style = {styles.salePriceText}>$ {product.price}</Text>
-                        </View>
+                        <Text style = {styles.priceText}>$ {product.salePrice} <Text style = {styles.salePriceText}>$ {product.price}</Text></Text>
                     }
 
                     <View style = {styles.quantityView}>
@@ -91,7 +89,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     img: {
-        backgroundColor: 'green',
         height: 120,
         width: 120
     },

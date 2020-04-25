@@ -25,7 +25,7 @@ function AuthProvider(props) {
             let user = await AsyncStorage.getItem(USER_KEY);
             user = JSON.parse(user);
             if (access_token !== null && user!== null) await handleLogin({access_token, user});
-            // else await handleLogout();
+            else await handleLogout();
             return {access_token, user};
         } catch (error) {
             throw new Error(error)
@@ -41,7 +41,7 @@ function AuthProvider(props) {
             await AsyncStorage.multiSet(data_);
 
             //AXIOS AUTHORIZATION HEADER
-            axios.defaults.headers.common["Authorization"] = `${data.access_token}`;
+            axios.defaults.headers.common["Authorization"] = `Bearer ${data.access_token}`;
             //DISPATCH TO REDUCER
             dispatch({type: LOGGED_IN, token: `${data.access_token}`, user: data.user});
         }catch (error) {

@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, TextInput, TouchableOpacity } from 'react-native';
 import Icons from 'react-native-vector-icons/AntDesign';
+import * as C from '../../Constants'
 
 export default function ProductCell(props) {
     const { product } = props;
@@ -34,18 +35,19 @@ export default function ProductCell(props) {
             ]} >
             <View style = {styles.productView}>
                 
-                <Image style = {styles.img}/>
+                <Image style = {styles.img}
+                    source={{
+                        uri: C.GET_IMAGE(product.url),
+                    }}
+                />
 
                 <View style = {styles.contentView}>
                     <Text style = {styles.nameText}>{product.name}</Text>
                     
-                    {product.salePrice == 0 ? 
+                    {product.salePrice == null ? 
                         <Text style = {styles.priceText}>$ {product.price}</Text> 
                         :
-                        <View style = {styles.priceView}>
-                            <Text style = {styles.priceText}>$ {product.salePrice} </Text>
-                            <Text style = {styles.salePriceText}>$ {product.price}</Text>
-                        </View>
+                        <Text style = {styles.priceText}>$ {product.salePrice}<Text style = {styles.salePriceText}>$ {product.price}</Text> </Text>
                     }
 
                     <View style = {styles.quantityView}>
@@ -67,12 +69,22 @@ export default function ProductCell(props) {
                                 style = {styles.quantityIcon} />
                         </TouchableWithoutFeedback>
                     </View> 
+                    { stateChange != 1 && stateChange != 0 ? (
+                        <TouchableOpacity 
+                            style = {styles.btnDelete}>
+                            <Icons name = {'close'}
+                                size = {23}
+                                color = {'rgb(0, 0, 0)'}
+                            />
+                        </TouchableOpacity>
+                        ): null
+                    }
                 </View>
-                
             </View>
+                    
             <View style = {styles.noteView}>
                 <Text style = { styles.noteTitle}>Note: </Text>
-                <TextInput placeholder = {'note'}
+                <TextInput placeholder = {'Note'}
                     multiline
                     editable = {stateChange == 0 ? false : true}
                     style = {styles.noteInput} />
@@ -92,7 +104,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     img: {
-        backgroundColor: 'green',
         height: 120,
         width: 120
     },
@@ -114,9 +125,6 @@ const styles = StyleSheet.create({
         textDecorationStyle: 'solid',
         marginLeft: 5,
         marginTop: 5
-    },
-    priceView: {
-        flexDirection: 'row',
     },
     quantityView: {
         width: '100%',
@@ -149,5 +157,9 @@ const styles = StyleSheet.create({
     noteInput: {
         fontSize: 16,
         width: '88%'
+    },
+    btnDelete: {
+        position: 'absolute',
+        marginLeft: '90%'
     },
 })

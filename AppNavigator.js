@@ -1,4 +1,6 @@
 import React from 'react';
+
+import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -20,11 +22,55 @@ const MainTab = createBottomTabNavigator()
 const AuthStack = createStackNavigator();
 
 function setOrderStack(props) {
+    // const {navigation} = props;
+
     return (
-        <OrderStack.Navigator initialRouteName = "Tables" >
-            <OrderStack.Screen name = "Tables" component = {Tables} />
-            <OrderStack.Screen name = "TableDetail" component = {TableDetail} />
-            <OrderStack.Screen name = "Menu" component = {Menu} />
+        <OrderStack.Navigator initialRouteName = "Tables"
+            screenOptions={() => ({
+                headerStyle: {
+                    backgroundColor: 'rgb(134, 85, 252)'
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: 20
+                },
+            })} >
+
+            <OrderStack.Screen name = "Tables" 
+                component = {Tables}
+                options = {() => ({
+                    title: "Tables",
+                })}
+            />
+
+            <OrderStack.Screen name = "TableDetail" 
+                component = {TableDetail}
+                options={({route}) => ({
+                    title: route.params.titleHeader,
+                    headerRight: () => (
+                        <TouchableOpacity
+                            onPress={() => route.params.submit()}
+                            style = {styles.btnSubmit} >
+                            <Text style = {styles.btnSubmitText} >Submit</Text>
+                        </TouchableOpacity>
+                    ),
+                })}
+            />
+            
+            <OrderStack.Screen name = "Menu" 
+                component = {Menu}
+                options={({route}) => ({
+                    title: route.params.titleHeader,
+                    headerRight: () => (
+                        <TouchableOpacity
+                            onPress={() => route.params.addOrders()}
+                            style = {styles.btnSubmit} >
+                            <Text style = {styles.btnSubmitText} >Add</Text>
+                        </TouchableOpacity>
+                    ),
+                })}
+            />
         </OrderStack.Navigator>
     );
 }
@@ -78,3 +124,20 @@ export default function setAuthStack(props) {
         </AuthStack.Navigator>
     );
 }
+
+
+const styles = StyleSheet.create({
+    btnSubmit:{
+        borderColor: 'white',
+        marginRight: 20,
+        borderRadius: 10,
+        borderWidth: 2,
+        paddingHorizontal: 10,
+        paddingVertical: 5
+    },
+    btnSubmitText: {
+        color: 'white',
+        fontSize: 18,
+        fontWeight: 'bold'
+    },
+})

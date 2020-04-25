@@ -3,14 +3,27 @@ import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 
 import table_active from '../../assets/table_active.png'
 import table_unactive from '../../assets/table_unactive.png'
+import table_ordering from '../../assets/table_ordering.png'
 
 export default function Table(props) {
-    const { table } = props;
+    const { table, moveToDetail } = props;
+
+    const move = () => {
+        if (table.user_id == null) {
+            moveToDetail(table.id)
+        }
+    }
+    
     return (
-        <TouchableOpacity activeOpacity = {0.7}>
+        <TouchableOpacity 
+            activeOpacity = {0.7}
+            onPress = {move} >
             <View style = { styles.container} >
-                <Text style = { styles.tableText } >{table.id}</Text>
-                <Image source = {table.avaliable ? table_unactive : table_active}/>
+                <Text style = { styles.tableText } >{table.name}</Text>
+                
+                <Image source = {table.user_id != null ? 
+                                table_ordering : table.status == "Using" ? 
+                                table_active: table_unactive } />
             </View>
         </TouchableOpacity>
     );
@@ -27,9 +40,9 @@ const styles = StyleSheet.create({
     },
     tableText: {
         position: 'absolute',
-        fontSize: 40,
+        fontSize: 30,
         textAlign: 'center',
         fontWeight: 'bold',
-        marginTop: 5
+        marginTop: 15
     },
 })

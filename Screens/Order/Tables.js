@@ -1,34 +1,62 @@
-import React, {Component} from 'react';
-import { StyleSheet, FlatList, View } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, FlatList, View, Alert } from 'react-native';
 
 import TableCell from '../Cells/TableCell'
+import Splash from '../Splash'
+// api network
+import * as api from '../../Services/Order'
 
-const currentTableList = [
-    {id: 0, avaliable: false},
-    {id: 1, avaliable: false},
-    {id: 2, avaliable: true},
-    {id: 3, avaliable: true},
-    {id: 4, avaliable: true},
-    {id: 5, avaliable: false},
-    {id: 6, avaliable: true},
-    {id: 7, avaliable: false},
-    {id: 8, avaliable: false},
-    {id: 9, avaliable: false},
-    {id: 10, avaliable: false},
-    {id: 11, avaliable: false}
-]
 export default function Tables(props) {
+    const {navigation} = props;
+    const {navigate} = navigation;
+
+    const [tables, setTables] = useState([]);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        fetchData()
+    }, [])
+
+    const fetchData = async () => {
+        setLoading(true)
+        let allTable = await api.getTables();
+        setTables(allTable)
+        setLoading(false)
+    }
+
+    const moveToDetail = async (id) => {
+        setLoading(true)
+        let item = tables.filter( i => {
+            return i.id == id
+        })
+        let detail = await api.getTableDetail(id);
+
+        navigate('TableDetail', {
+            titleHeader: `Table ${item[0].name}`,
+            table: item[0],
+            detail: detail
+        })
+        setLoading(false)
+    }
+
     return (
-        <FlatList
-            data={currentTableList}
+        <View style = {styles.container} >
+            {loading ? <Splash/>: null }
+            <FlatList
+            data={tables}
             numColumns = {2}
             renderItem={({ item }) =>
                 <View style = {styles.cell}>
-                    <TableCell table={item} />
+                    <TableCell
+                        table = {item}
+                        moveToDetail = {moveToDetail}
+                    />
                 </View>}
             keyExtractor={item => item.id}
             contentContainerStyle = {{marginHorizontal: 8}}
         />
+        </View>
+        
     );
 }
 

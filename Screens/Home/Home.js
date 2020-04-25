@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
 import { useAuth } from "../../Providers/Auth";
 
 export default function Home(props) {
     const {navigate} = props.navigation;
-    const {state} = useAuth();
-
-
-    useEffect(() => {
-        console.log(state)
-      }, [])
+    const {state } = useAuth();
 
     
     return (
         <View style = {styles.container}>
-            <Text style = {{fontSize: 40}}>{state.user.name}</Text>
+            <Text style = {{fontSize: 40}}>{ state.isLoggedIn ? state.user.name : null}</Text>
         </View>
     );
 }

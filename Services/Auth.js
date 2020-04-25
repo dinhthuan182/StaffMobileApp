@@ -16,6 +16,14 @@ export async function login(username, password) {
     }
 }
 
+export async function logout() {
+    try{  
+        let res = await axios.post(C.LOGOUT);
+    }catch (e) {
+        throw handler(e);
+    }
+}
+
 export function handler(err) {
     let error = err;
 
