@@ -46,19 +46,19 @@ export default function MenuCell(props) {
                 />
 
                 <View style = {styles.contentView}>
-                    <Text style = {styles.nameText}>{product.name}</Text>
-                    
-                    {product.salePrice == null ? 
+                    <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
+                    <Text style = {styles.typeText}>Type: {product.type}</Text>
+                    {product.sale_price == null ? 
                         <Text style = {styles.priceText}>$ {product.price}</Text> 
                         :
-                        <Text style = {styles.priceText}>$ {product.salePrice} <Text style = {styles.salePriceText}>$ {product.price}</Text></Text>
+                        <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.salePriceText}>$ {product.price}</Text></Text>
                     }
 
                     <View style = {styles.quantityView}>
                         <TouchableWithoutFeedback
                             onPress = { handleMinus} >
                             <Icons name = {'minuscircleo'}
-                                size = {20}
+                                size = {18}
                                 color = {'rgb(0, 0, 0)'}
                                 style = {styles.quantityIcon} />
                         </TouchableWithoutFeedback>
@@ -68,7 +68,7 @@ export default function MenuCell(props) {
                         <TouchableWithoutFeedback
                             onPress = { handleAdd } >
                             <Icons name = {'pluscircleo'}
-                                size = {20}
+                                size = {18}
                                 color = {'rgb(0, 0, 0)'}
                                 style = {styles.quantityIcon} />
                         </TouchableWithoutFeedback>
@@ -98,11 +98,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
     nameText: {
-        fontSize: 22,
-        fontWeight: 'bold'
+        fontSize: 20,
+        fontWeight: 'bold',
+        width: '97%',
+    },
+    typeText: {
+        fontStyle: 'italic'
     },
     priceText: {
-        fontSize: 20
+        fontSize: 18
     },
     salePriceText: {
         fontSize: 16,
@@ -122,7 +126,7 @@ const styles = StyleSheet.create({
     },
     quantityText: {
         width: 60,
-        fontSize: 20,
+        fontSize: 18,
         textAlign: 'center'
     },
     quantityIcon: {

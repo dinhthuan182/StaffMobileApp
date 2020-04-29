@@ -13,6 +13,8 @@ export const LOGOUT = `${API_URL}/logout`;
 export const GET_TABLE = `${API_URL}/tables`;
 export const TABLE_DETAIL = (id) => { return `${API_URL}/tables/${id}` };
 export const GET_MENUS = `${API_URL}/products`;
+export const POST_ORDER = (id) => { return `${API_URL}/tables/${id}/updateProducts` };
 
+export const UNSELECTED_TABLE = (id) => { return `${API_URL}/tables/${id}/unstate` };
 // General
 export const GET_IMAGE = (url) => { return `${ROOT_URL}/images/products/${url}` };

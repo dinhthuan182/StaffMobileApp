@@ -14,19 +14,21 @@ export default function Menu(props) {
     const [menus, setMenus] = useState([]);
     const [filterIndex, setFilterIndex] = useState(0);
     const [menusFilter, setMenusFilter] = useState([]);
-    
-    
 
     useEffect(() => {
         navigation.setParams({ addOrders: addOrders });
-        fetchData()
-    }, [])
+
+        if (menus.length == 0) {
+            fetchData();  
+        }
+    }, [menus]);
 
     // filter order item to submit
     const addOrders = () => {
         const products = menus.filter(item => {
             return item.quantity > 0
         })
+        
         navigation.navigate('TableDetail', {
             newOrder: products
         })
@@ -76,7 +78,7 @@ export default function Menu(props) {
             {loading ? <Splash/>: null }
             <View style = {styles.headerMenu}>
                 <SegmentedControlTab
-                    values = {['All', 'Drink', "Food"]}
+                    values = {['All', 'Drink', 'Food']}
                     selectedIndex = {filterIndex}
                     onTabPress = {handleIndexChange}
                     tabsContainerStyle={styles.tabsContainerStyle}
@@ -93,7 +95,7 @@ export default function Menu(props) {
                     <View style = {styles.cell}>
                         <MenuCell product = {item} onOrdersChange = {onOrdersChange} />
                     </View>}
-                keyExtractor={item => item.id}
+                keyExtractor={item => `${item.id}`}
                 contentContainerStyle = {{marginHorizontal: 8}}
             />
         </SafeAreaView>
@@ -133,18 +135,5 @@ const styles = StyleSheet.create({
     },
     activeTabTextStyle: { 
         color: 'white' 
-    },
-    btnSubmit:{
-        borderColor: 'white',
-        marginRight: 20,
-        borderRadius: 10,
-        borderWidth: 2,
-        paddingHorizontal: 10,
-        paddingVertical: 5
-    },
-    btnSubmitText: {
-        color: 'white',
-        fontSize: 18,
-        fontWeight: 'bold'
     },
 })

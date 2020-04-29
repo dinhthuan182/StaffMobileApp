@@ -1,15 +1,24 @@
-import React, {useEffect} from 'react';
-import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, Text } from 'react-native';
+import React, {useState, useEffect} from 'react';
+import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, Text, Alert } from 'react-native';
 
 import ProductCell from '../Cells/ProductCell'
-
+import Splash from '../Splash'
 import * as api from '../../Services/Order'
+
+function PostProduct(id, quantity, note) {
+    this.id = id;
+    this.quantity = quantity;
+    this.note = note;
+ }
 
 export default function TableDetail(props) {
     const {navigation, route} = props;
     const {table, detail, newOrder} = route.params
-    const {current_sale_total, product_list, created_at, created_by_name} = detail
+    let {current_sale_total, product_list, created_at, created_by_name} = detail
     
+    const [loading, setLoading] = useState(false);
+    const [total, setTotal] = useState(current_sale_total == null ? 0 : current_sale_total)
+    const [orderList, setOrderList] = useState(product_list);
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -20,27 +29,135 @@ export default function TableDetail(props) {
     today = hours +':'+ min +' '+ mm +'-'+ dd +'-'+ yyyy;
 
     useEffect(() => {
-        navigation.setParams({ submit: submitOrders });
+        navigation.setParams({ submit: submitOrders, outTable: onOutTable });
 
-        fetchData()
-    }, [])
+        updateOrder();
+    }, [newOrder])
 
-    const submitOrders = () => {
-        console.log('submitOrders')
+    const submitOrders = async () => {
+        setLoading(true)
+        postList = []
+        var submitFlag = false
+        orderList.forEach(item => {
+            
+            if (item.isUpdate == true || item.isNew == true) {
+                submitFlag = true
+            }
+            
+           let p = new PostProduct(item.id, item.quantity, typeof item.note == 'undefined' ? "Note": item.note);
+           postList.push(p);
+        });
+
+        if (submitFlag == true) {
+            const res = await api.postOrders(table.id, postList);
+            setTotal(res.current_sale_total)
+            setOrderList(res.product_list)
+        } else { 
+            Alert.alert('Notification', `Table ${table.name} not update product list`)
+        }
+        
+        setLoading(false)
     }
 
-    const fetchData = async () => {
-        console.log("see data:" + newOrder);
-        // setLoading(true)
-        // let allTable = await api.getTableDetail(table.id);
-        // setLoading(false)
+    const onOutTable = async () => {
+        setLoading(true)
+        const result = await api.outTable(table.id)
+        if (result == true) {
+            navigation.goBack()
+        }
+        setLoading(false)
+    }
+
+    const updateOrder = () => {
+        if (typeof newOrder != 'undefined') {
+            var updatedOrders = orderList;
+            var flag = false;
+            newOrder.forEach(element => {
+                flag = false;
+
+                updatedOrders.forEach(item => {
+                    if (item.id == element.id) {
+                        flag = true
+                        if ( typeof item.isNew == 'undefined') {
+                            item.oldQuantity = item.quantity;
+                            item.isUpdate = true;
+                        }
+                        item.quantity += element.quantity
+                        
+                    }
+                });
+
+                if (flag == false) {
+                    element.isNew = true;
+                    updatedOrders.push(element);
+                }
+            });
+            setOrderList(updatedOrders);
+        }
+    }
+
+    // state: 0: delete, 1: new, 2 update
+    const onUpdateOrder = (id, quantity, note, state) => {
+        switch (parseInt(state)) {
+            // delete
+            case 0:
+                const newList = orderList.filter(item => {
+                    return item.id != id
+                });
+                setOrderList(newList);
+                break;
+            // new
+            case 1:
+                const newOrders = orderList.map(item => {
+                    if (item.id == id) {
+                        item.quantity = quantity
+                    }
+                    return item
+                });
+                setOrderList(newOrders);
+                break;
+            // update
+            case 2: 
+                const updateOrders = orderList.map(item => {
+                    if (item.id == id) {
+                        
+                        if ( typeof item.isUpdate == 'undefined') {
+                            item.isUpdate = true
+                            item.oldQuantity = item.quantity
+                        }
+
+                        if (quantity == item.oldQuantity) {
+                            delete item.isUpdate
+                            delete item.oldQuantity
+                        }
+                        
+                        item.quantity = quantity
+                    }
+                    return item
+                });
+                setOrderList(updateOrders);
+                break;  
+            // add note
+            case 3:
+                var noteOrders = orderList
+                noteOrders.forEach(item => {
+                    if (item.id == id) {
+                        item.note = note
+                    }
+                });
+                setOrderList(noteOrders);
+                break;
+            default:
+                break;
+        }
     }
 
     return (
         <SafeAreaView style = { styles.container} >
+            {loading ? <Splash/>: null }
             <View style = {styles.headerMenu}>
                 <View>
-                <Text style = {styles.totalBillText}>Total: $ {current_sale_total == null ? 0: current_sale_total} <Text style = {styles.smallBillText}>VND</Text></Text>
+                <Text style = {styles.totalBillText}>Total: $ {total} <Text style = {styles.smallBillText}>VND</Text></Text>
                     <Text>Create at: {created_at == null ? today : created_at}</Text>
                 </View>
                 <TouchableOpacity 
@@ -51,11 +168,11 @@ export default function TableDetail(props) {
                 </TouchableOpacity>
             </View>
             <FlatList
-                data={product_list}
+                data={orderList}
                 numColumns = {1}
                 renderItem={({ item }) =>
                     <View style = {styles.cell}>
-                        <ProductCell product = {item} />
+                        <ProductCell product = {item} onUpdateOrder = {onUpdateOrder} />
                     </View>}
                 keyExtractor={item => `${item.id}`}
                 contentContainerStyle = {{marginHorizontal: 8}}

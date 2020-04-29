@@ -113,6 +113,7 @@ export default function Login(props) {
                 
                 
                 <TouchableOpacity 
+                    activeOpacity = {0.5}
                     style = {styles.btnLogin}
                     onPress = {() => onLoginSubmit() } >
                     <Text style={styles.btnLoginText}>Login</Text>

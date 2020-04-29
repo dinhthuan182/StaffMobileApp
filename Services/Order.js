@@ -42,6 +42,37 @@ export async function getMenus() {
     }
 }
 
+export async function postOrders(table_id, orders) {
+    try {
+        let formdata = new FormData();
+
+        for(let [i, product] of orders.entries()) {
+            formdata.append(`product_list[${i}][id]`, product.id)
+            formdata.append(`product_list[${i}][quantity]`, product.quantity)
+            formdata.append(`product_list[${i}][note]`, product.note)
+        }
+
+        let res = await axios.post(C.POST_ORDER(table_id), formdata);
+        const tableDetail = JSON.parse(JSON.stringify(res.data))
+        return tableDetail;
+    }catch (e) {
+        throw handler(e);
+        return null
+    }
+}
+
+export async function outTable(id) {
+    
+    try{
+        let res = await axios.get(C.UNSELECTED_TABLE(id));
+        const data = JSON.parse(JSON.stringify(res.data));
+        return true;
+    }catch (e) {
+        throw handler(e);
+        return false
+    }
+}
+
 export function handler(err) {
     let error = err;
 

@@ -22,10 +22,10 @@ const MainTab = createBottomTabNavigator()
 const AuthStack = createStackNavigator();
 
 function setOrderStack(props) {
-    // const {navigation} = props;
 
     return (
         <OrderStack.Navigator initialRouteName = "Tables"
+            
             screenOptions={() => ({
                 headerStyle: {
                     backgroundColor: 'rgb(134, 85, 252)'
@@ -35,6 +35,7 @@ function setOrderStack(props) {
                     fontWeight: 'bold',
                     fontSize: 20
                 },
+                
             })} >
 
             <OrderStack.Screen name = "Tables" 
@@ -47,6 +48,12 @@ function setOrderStack(props) {
             <OrderStack.Screen name = "TableDetail" 
                 component = {TableDetail}
                 options={({route}) => ({
+                    headerLeft: () => (
+                        <TouchableOpacity
+                            onPress={() => route.params.outTable()} >
+                            <MaterialIcons name={'chevron-left'} size={50} color={'white'} />
+                        </TouchableOpacity>
+                    ),
                     title: route.params.titleHeader,
                     headerRight: () => (
                         <TouchableOpacity
@@ -55,6 +62,7 @@ function setOrderStack(props) {
                             <Text style = {styles.btnSubmitText} >Submit</Text>
                         </TouchableOpacity>
                     ),
+
                 })}
             />
             
