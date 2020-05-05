@@ -2,24 +2,26 @@ import axios from 'axios';
 
 import * as C from '../Constants';
 
-export async function login(username, password) {
+export async function getPromotions() {
+    
     try{
-        
-        let res = await axios.post(C.LOGIN, {
-            username: username,
-            password: password
-        });
+        let res = await axios.get(C.GET_PROMOTION);
+        const {promotion_list} = res.data;
 
-        return res.data;
+        const data = JSON.parse(JSON.stringify(promotion_list))
+        return data;
     }catch (e) {
         throw handler(e);
         return null;
     }
 }
 
-export async function logout() {
-    try{  
-        let res = await axios.post(C.LOGOUT);
+export async function promotionDetail(id) {
+    
+    try{
+        let res = await axios.get(C.PROMOTION_DETAIL(id));
+        const detail = JSON.parse(JSON.stringify(res.data))
+        return detail;
     }catch (e) {
         throw handler(e);
         return null;

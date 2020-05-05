@@ -1,23 +1,32 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, TextInput, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, TextInput, TouchableOpacity, Alert } from 'react-native';
 import Icons from 'react-native-vector-icons/AntDesign';
-import * as C from '../../Constants'
+
+import * as C from '../../Constants';
+
+import { useAuth } from "../../Providers/Auth";
 
 export default function ProductCell(props) {
+
+    const {state, handleLogout} = useAuth();
+    const {isLoggedIn, user} = state;
+
     const { product, onUpdateOrder } = props;
 
     const [stateChange, setStateChange] = useState(typeof product.isNew != 'undefined' ? 2 : 
                                                     typeof product.isUpdate != 'undefined' ? 1: 0)
     const [quantity, setQuantity] = useState(0);
+    const [noteText, setNoteText] = useState(product.note)
 
     useEffect(() => {
         setQuantity(product.quantity)
         setStateChange(typeof product.isNew != 'undefined' ? 2 : 
         typeof product.isUpdate != 'undefined' ? 1: 0)
-    }, [product.quantity, product.isUpdate, product.isNew, product.oldQuantity])
+    }, [product.quantity, product.isUpdate, product.isNew, product.oldQuantity, noteText])
 
     const handleMinus = () => {
         const newValue = quantity - 1;
+        
         if (typeof product.isNew != 'undefined') {
             if (newValue > 0) {
                 setQuantity(newValue)
@@ -30,12 +39,39 @@ export default function ProductCell(props) {
                 setQuantity(newValue);
                 onStateChange(1);
                 onUpdateOrder(product.id, newValue, "", 2);
+            } else if (user.role == "Admin" || user.role == "Manager") {
+                if(newValue > 0) {
+                    onUpdateOrder(product.id, newValue, "", 2) 
+                } else {
+                    onUpdateOrder(product.id, 0, "", 0);
+                }
             } else {
                 setQuantity(product.oldQuantity);
                 onStateChange(0);
                 onUpdateOrder(product.id, product.oldQuantity, "", 2);
             }
-        } 
+        } else if (user.role == "Admin" || user.role == "Manager") {
+            Alert.alert(
+                "Warning",
+                "This product has been ordered.\nAre you sure you want to decrease this product?",
+                [
+                    {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                    },
+                    { text: "Yes", onPress: () => {
+                    if(newValue > 0) {
+                        onUpdateOrder(product.id, newValue, "", 2) 
+                    } else {
+                        onUpdateOrder(product.id, 0, "", 0);
+                    }
+                    }}
+                ],
+                { cancelable: false }
+            );
+        }
+    
         
     }
 
@@ -49,93 +85,116 @@ export default function ProductCell(props) {
     const onStateChange = (value) => {
         if (typeof product.isNew == 'undefined') {
             if (typeof product.isUpdate != 'undefined' && quantity > product.oldQuantity) {
-                setStateChange(1)
+                setStateChange(1);
             } else {
-                setStateChange(0)
+                setStateChange(0);
+                setNoteText(product.note)
             }
            
         } else {
-            setStateChange(2)
+            setStateChange(2);
         }
     }
 
     const handleDelete = () => {
-        onUpdateOrder(product.id, 0, "", 0);
+        if ((user.role == "Admin") || (user.role == "Manager")) {
+            Alert.alert(
+                "Warning",
+                "This product has been ordered.\nAre you sure you want to delete this product?",
+                [
+                  {
+                    text: "No",
+                    onPress: () => console.log("Cancel Pressed"),
+                    style: "cancel"
+                  },
+                  { text: "Yes", onPress: () => onUpdateOrder(product.id, 0, "", 0) }
+                ],
+                { cancelable: false }
+            );
+        } 
     }
 
     const noteChange = (text) => {
         onUpdateOrder(product.id, 0, text, 3);
     }
-
-    return (
-        <View style = { [styles.container, 
-            stateChange == 0 ? styles.currentState : 
-                stateChange == 1 ? styles.updateState : 
-                    styles.newState
-            ]} >
-            <View style = {styles.productView}>
-                
-                <Image style = {styles.img}
-                    source={{
-                        uri: C.GET_IMAGE(product.url),
-                    }}
-                />
-
-                <View style = {styles.contentView}>
-                    <View style = {styles.nameView}>
-                        <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
-                        { stateChange != 1 && stateChange != 0 ? (
-                            <TouchableOpacity 
-                                onPress = {handleDelete}>
-                                <Icons name = {'close'}
-                                    size = {23}
-                                    color = {'rgb(0, 0, 0)'}
-                                />
-                            </TouchableOpacity>
-                            ): null 
-                        }
-                    </View>
+    if (isLoggedIn){
+        return (
+            <View style = { [styles.container, 
+                stateChange == 0 ? styles.currentState : 
+                    stateChange == 1 ? styles.updateState : 
+                        styles.newState
+                ]} >
+                <View style = {styles.productView}>
                     
-                    <Text>Type: {product.type}</Text>
-
-                    {product.sale_price == null ? 
-                        <Text style = {styles.priceText}>$ {product.price}</Text> 
-                        :
-                        <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.salePriceText}>$ {product.price}</Text> </Text>
-                    }
-
-                    <View style = {styles.quantityView}>
-                        <TouchableWithoutFeedback
-                            onPress = { handleMinus} >
-                            <Icons name = {'minuscircleo'}
-                                size = {18}
-                                color = {'rgb(0, 0, 0)'}
-                                style = {styles.quantityIcon} />
-                        </TouchableWithoutFeedback>
-
-                        <Text style = {styles.quantityText} >{quantity}</Text>
-
-                        <TouchableWithoutFeedback
-                            onPress = { handleAdd } >
-                            <Icons name = {'pluscircleo'}
-                                size = {18}
-                                color = {'rgb(0, 0, 0)'}
-                                style = {styles.quantityIcon} />
-                        </TouchableWithoutFeedback>
-                    </View> 
+                    <Image style = {styles.img}
+                        source={{
+                            uri: C.GET_IMAGE(product.url),
+                        }}
+                    />
+    
+                    <View style = {styles.contentView}>
+                        <View style = {styles.nameView}>
+                            <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
+                            { (stateChange != 1 && stateChange != 0) || (user.role == "Admin") || (user.role == "Manager") ? (
+                                <TouchableOpacity 
+                                    onPress = {handleDelete}>
+                                    <Icons name = {'close'}
+                                        size = {23}
+                                        color = {'rgb(0, 0, 0)'}
+                                    />
+                                </TouchableOpacity>
+                                ): null 
+                            }
+                        </View>
+                        
+                        <Text style = {styles.typeText}>Type: {product.type}</Text>
+    
+                        {product.sale_price == null ? 
+                            <Text style = {styles.priceText}>$ {product.price} <Text style = {styles.vndText}>VND</Text></Text> 
+                            :
+                            <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
+                        }
+    
+                        <View style = {styles.quantityView}>
+                            <TouchableWithoutFeedback
+                                onPress = { handleMinus} >
+                                <Icons name = {'minuscircleo'}
+                                    size = {18}
+                                    color = {'rgb(0, 0, 0)'}
+                                    style = {styles.quantityIcon} />
+                            </TouchableWithoutFeedback>
+    
+                            <Text style = {styles.quantityText} >{quantity}</Text>
+    
+                            <TouchableWithoutFeedback
+                                onPress = { handleAdd } >
+                                <Icons name = {'pluscircleo'}
+                                    size = {18}
+                                    color = {'rgb(0, 0, 0)'}
+                                    style = {styles.quantityIcon} />
+                            </TouchableWithoutFeedback>
+                        </View> 
+                    </View>
+                </View>
+                        
+                <View style = {styles.noteView}>
+                    <Text style = { styles.noteTitle}>Note: </Text>
+                    <TextInput placeholder = {'Note'}
+                        onChangeText = {text => noteChange(text)}
+                        multiline
+                        value = {noteText}
+                        editable = {stateChange == 0 ? false : true}
+                        style = {styles.noteInput} />
                 </View>
             </View>
-                    
-            <View style = {styles.noteView}>
-                <Text style = { styles.noteTitle}>Note: </Text>
-                <TextInput placeholder = {'Note'}
-                    onChangeText = {text => noteChange(text)}
-                    multiline
-                    editable = {stateChange == 0 ? false : true}
-                    style = {styles.noteInput} />
+        );
+    } else {
+        return (
+            <View > 
             </View>
-        </View>
-    );
+        );
+    } 
+    
 }
 
 const styles = StyleSheet.create({
@@ -166,8 +225,15 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
 
     },
+    typeText: {
+        fontStyle: 'italic'
+    },
     priceText: {
         fontSize: 18
+    },
+    vndText: {
+        fontSize: 14,
+        fontStyle: 'italic'
     },
     salePriceText: {
         fontSize: 16,

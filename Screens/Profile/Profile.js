@@ -1,10 +1,13 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
 import Constants from 'expo-constants';
-import Icons from 'react-native-vector-icons/AntDesign'
+import Icons from 'react-native-vector-icons/AntDesign';
+import moment from 'moment';
 
 import { useAuth } from "../../Providers/Auth";
-import * as api from '../../Services/Auth'
+
+import * as api from '../../Services/Auth';
+import * as profileApi from '../../Services/Profile';
 
 import TimeSheetCell from '../Cells/TimeSheetCell'
 
@@ -20,9 +23,38 @@ const timeSheet = [
 ]
 
 export default function Profile(props) {
-
     const {state, handleLogout} = useAuth();
     const {isLoggedIn, user} = state;
+
+    const [timeSpace, setTimeSpace] = useState(`${moment().startOf('isoWeek').format('DD')} - ${moment().endOf('isoWeek').format('DD/MM/YYYY')}`);
+    const [numsOfWeek, setNumsOfWeek] = useState(0)
+
+    useEffect(() => { 
+        getSchedules();
+    }, [numsOfWeek]);
+
+    const getSchedules = ()=> {
+        if (numsOfWeek > 0) {
+            const schedules = profileApi.getSchedules(user.id, moment().subtract(numsOfWeek, 'weeks').startOf('isoWeek').format('DD-MM-YYYY'), moment().subtract(numsOfWeek, 'weeks').endOf('isoWeek').format('DD-MM-YYYY'));
+            setTimeSpace(`${moment().subtract(numsOfWeek, 'weeks').startOf('isoWeek').format('DD')} - ${moment().subtract(numsOfWeek, 'weeks').endOf('isoWeek').format('DD/MM/YYYY')}`);
+        } else {
+            const schedules = profileApi.getSchedules(user.id, moment().startOf('isoWeek').format('DD-MM-YYYY'), moment().endOf('isoWeek').format('DD-MM-YYYY'));
+            setTimeSpace(`${moment().startOf('isoWeek').format('DD')} - ${moment().endOf('isoWeek').format('DD/MM/YYYY')}`);
+        }
+    }
+
+    const beforeWeek = () => {
+        setNumsOfWeek(numsOfWeek+1);
+    }
+
+    const afterWeek = () => {
+        if (numsOfWeek > 1) {
+            setNumsOfWeek(numsOfWeek-1);
+        } else {
+            setNumsOfWeek(0);
+        }
+        
+    }
 
     return (
         <SafeAreaView style = { styles.container} >
@@ -37,13 +69,16 @@ export default function Profile(props) {
             
             <Text style = {styles.timeSheetTitle}>Schedule</Text>
             <View style = {styles.timeLineView}>
-                <TouchableWithoutFeedback>
+                <TouchableWithoutFeedback
+                    onPress = {() => beforeWeek()}>
                     <Icons name = {'caretleft'}
                         size = {20}
                         color = {'rgb(104, 104, 104)'} />
                 </TouchableWithoutFeedback>
-                <Text style = {styles.timeLineText}>18 - 24/04/2020</Text>
-                <TouchableWithoutFeedback>
+                <Text style = {styles.timeLineText}>{timeSpace}</Text>
+                <TouchableWithoutFeedback
+                    onPress = {() => afterWeek()}>
+                    
                     <Icons name = {'caretright'}
                     size = {20}
                     color = {'rgb(104, 104, 104)'} />
@@ -59,7 +94,7 @@ export default function Profile(props) {
                 contentContainerStyle = {{marginHorizontal: 8, borderWidth: 1}}
             />
 
-            <View style = {styles.headerProfile}>
+            <View style = {styles.footer}>
                 <TouchableOpacity 
                     onPress={() => {
                         api.logout();
@@ -80,11 +115,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         marginTop: Constants.statusBarHeight,
-        alignItems: 'center'
+        alignItems: 'center',
     },
     headerProfile: {
         width: '100%',
-        marginVertical: 10,
         justifyContent: 'center',
         paddingHorizontal: 16
     },
@@ -112,11 +146,16 @@ const styles = StyleSheet.create({
     logoutView: {
         flexDirection: 'row',
         alignItems: 'center',
-        marginBottom: 30
     },
     logoutText: {
         fontSize: 18,
         color:'rgb(104, 104, 104)',
         marginLeft: 10
-    }
+    },
+    footer: {
+        width: '100%',
+        marginVertical: 10,
+        justifyContent: 'center',
+        paddingHorizontal: 16
+    },
 })

@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Alert } from 'react-native';
 
 import table_active from '../../assets/table_active.png'
 import table_unactive from '../../assets/table_unactive.png'
@@ -11,6 +11,15 @@ export default function Table(props) {
     const move = () => {
         if (table.user_id == null) {
             moveToDetail(table.id)
+        } else {
+            Alert.alert(
+                "Notification",
+                "The table is being accessed by other users.",
+                [
+                    { text: "Ok"}
+                ],
+                { cancelable: false }
+            );
         }
     }
     

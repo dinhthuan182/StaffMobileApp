@@ -6,20 +6,63 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // login
-import Login from './Screens/Auth/Login'
-import Home from './Screens/Home/Home'
-import Tables from './Screens/Order/Tables'
-import TableDetail from './Screens/Order/TableDetail'
-import Menu from './Screens/Order/Menu'
-import Profile from './Screens/Profile/Profile' 
+import Login from './Screens/Auth/Login';
+
+import Home from './Screens/Home/Home';
+import PromotionDetail from './Screens/Home/PromotionDetail'
+
+import Tables from './Screens/Order/Tables';
+import TableDetail from './Screens/Order/TableDetail';
+import Menu from './Screens/Order/Menu';
+
+import Profile from './Screens/Profile/Profile';
+
+
 
 import { useAuth } from "./Providers/Auth";
 
+const HomeStack = createStackNavigator();
+
 const OrderStack = createStackNavigator();
+
+const ProfileStack = createStackNavigator();
 
 const MainTab = createBottomTabNavigator() 
 
 const AuthStack = createStackNavigator();
+
+function setHomeStack(props) {
+    return (
+        <HomeStack.Navigator initialRouteName = "Home"
+            
+            screenOptions={() => ({
+                headerStyle: {
+                    backgroundColor: 'rgb(134, 85, 252)'
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: 20
+                },
+                
+            })} >
+
+            <OrderStack.Screen name = "Home" 
+                component = {Home}
+                options = {() => ({
+                    title: "Promotions",
+                })}
+            />
+
+            <OrderStack.Screen name = "PromotionDetail" 
+                component = {PromotionDetail}
+                options={({route}) => ({
+                    title: route.params.titleHeader,
+                })}
+            />
+        </HomeStack.Navigator>
+    );
+}
 
 function setOrderStack(props) {
 
@@ -83,6 +126,31 @@ function setOrderStack(props) {
     );
 }
 
+function setProfileStack(props) {
+    return (
+        <ProfileStack.Navigator initialRouteName = "Tables"
+            screenOptions={() => ({
+                headerStyle: {
+                    backgroundColor: 'rgb(134, 85, 252)'
+                },
+                headerTintColor: 'white',
+                headerTitleStyle: {
+                    fontWeight: 'bold',
+                    fontSize: 20
+                },
+                
+            })} >
+
+            <OrderStack.Screen name = "Profile" 
+                component = {Profile}
+                options = {() => ({
+                    title: "Profile",
+                })}
+            />
+        </ProfileStack.Navigator>
+    );
+}
+
 
 function setMainTab(props) {
     return(
@@ -109,9 +177,9 @@ function setMainTab(props) {
                 inactiveTintColor: 'gray',
             }}
         >
-            <MainTab.Screen name = "Home" component = {Home} />
+            <MainTab.Screen name = "Home" component = {setHomeStack} />
             <MainTab.Screen name = "Tables" component = {setOrderStack} />
-            <MainTab.Screen name = "Profile" component = {Profile} />
+            <MainTab.Screen name = "Profile" component = {setProfileStack} />
         </MainTab.Navigator>
     );
 }

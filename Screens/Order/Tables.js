@@ -19,8 +19,12 @@ export default function Tables(props) {
 
     const fetchData = async () => {
         setLoading(true)
+
         let allTable = await api.getTables();
-        setTables(allTable)
+        if (allTable != null) {
+            setTables(allTable)
+        }
+        
         setLoading(false)
     }
 
@@ -29,13 +33,26 @@ export default function Tables(props) {
         let item = tables.filter( i => {
             return i.id == id
         })
-        let detail = await api.getTableDetail(id);
 
-        navigate('TableDetail', {
-            titleHeader: `Table ${item[0].name}`,
-            table: item[0],
-            detail: detail
-        })
+        let detail = await api.getTableDetail(id);
+        
+        if(detail != null) {
+            navigate('TableDetail', {
+                titleHeader: `Table ${item[0].name}`,
+                table: item[0],
+                detail: detail
+            })
+        } else {
+            Alert.alert(
+                "Warning",
+                "Please check your network connection.",
+                [
+                    { text: "Ok"}
+                ],
+                { cancelable: false }
+            );
+        }
+        
         setLoading(false)
     }
 
@@ -43,18 +60,18 @@ export default function Tables(props) {
         <View style = {styles.container} >
             {loading ? <Splash/>: null }
             <FlatList
-            data={tables}
-            numColumns = {2}
-            renderItem={({ item }) =>
-                <View style = {styles.cell}>
-                    <TableCell
-                        table = {item}
-                        moveToDetail = {moveToDetail}
-                    />
-                </View>}
-            keyExtractor={item => item.id}
-            contentContainerStyle = {{marginHorizontal: 8}}
-        />
+                data={tables}
+                numColumns = {2}
+                renderItem={({ item }) =>
+                    <View style = {styles.cell}>
+                        <TableCell
+                            table = {item}
+                            moveToDetail = {moveToDetail}
+                        />
+                    </View>}
+                keyExtractor={item => item.id}
+                contentContainerStyle = {{marginHorizontal: 8}}
+            />
         </View>
         
     );

@@ -29,6 +29,7 @@ export default function Login(props) {
         setLoading(true);
         if (username == "" || password == "") {
             setError("Please enter your account and password");
+            setLoading(false);
             return
         }
 
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
     appTitle: {
         fontSize: 30,
         color: 'white',
-        fontWeight: '900',
+        fontWeight: 'bold',
         marginBottom: 50
     },
     inputContainer: {
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
         color: 'rgb(134, 85, 252)',
         fontSize: 18,
         textAlign: 'center',
-        fontWeight: '600'
+        fontWeight: 'bold'
     },
     error: {
         color: 'red',

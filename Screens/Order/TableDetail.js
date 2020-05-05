@@ -1,9 +1,12 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, Text, Alert } from 'react-native';
 
-import ProductCell from '../Cells/ProductCell'
-import Splash from '../Splash'
-import * as api from '../../Services/Order'
+import ProductCell from '../Cells/ProductCell';
+import Splash from '../Splash';
+
+import * as api from '../../Services/Order';
+
+import { useAuth } from "../../Providers/Auth";
 
 function PostProduct(id, quantity, note) {
     this.id = id;
@@ -12,6 +15,9 @@ function PostProduct(id, quantity, note) {
  }
 
 export default function TableDetail(props) {
+    const {state} = useAuth();
+    const {isLoggedIn, user} = state;
+
     const {navigation, route} = props;
     const {table, detail, newOrder} = route.params
     let {current_sale_total, product_list, created_at, created_by_name} = detail
@@ -50,10 +56,15 @@ export default function TableDetail(props) {
 
         if (submitFlag == true) {
             const res = await api.postOrders(table.id, postList);
-            setTotal(res.current_sale_total)
-            setOrderList(res.product_list)
+            if (res != null) {
+                setTotal(res.current_sale_total)
+                setOrderList(res.product_list)
+            } else {
+                Alert.alert('Notification', `Table ${table.name} can not update product list`)
+            }
+            
         } else { 
-            Alert.alert('Notification', `Table ${table.name} not update product list`)
+            Alert.alert('Notification', `Table ${table.name} can not update product list`)
         }
         
         setLoading(false)
@@ -157,8 +168,9 @@ export default function TableDetail(props) {
             {loading ? <Splash/>: null }
             <View style = {styles.headerMenu}>
                 <View>
-                <Text style = {styles.totalBillText}>Total: $ {total} <Text style = {styles.smallBillText}>VND</Text></Text>
+                    <Text style = {styles.totalBillText}>Total: {total} <Text style = {styles.smallBillText}>VND</Text></Text>
                     <Text>Create at: {created_at == null ? today : created_at}</Text>
+                    <Text>Create by: {created_by_name == null ? "" : created_by_name}</Text>
                 </View>
                 <TouchableOpacity 
                     onPress = {() => navigation.navigate('Menu', {titleHeader: `Table ${table.name}`})}
@@ -202,6 +214,7 @@ const styles = StyleSheet.create({
     },
     smallBillText: {
         fontSize: 15,
+        fontStyle: 'italic'
     },
     btnMenu: {
         borderRadius: 5,

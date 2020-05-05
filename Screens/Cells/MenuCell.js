@@ -5,7 +5,7 @@ import Icons from 'react-native-vector-icons/AntDesign';
 import * as C from '../../Constants'
 
 export default function MenuCell(props) {
-    const { product, onOrdersChange } = props;
+    const { product, onOrdersChange, isPromotion } = props;
 
     const [quantity, setQuantity] = useState(product.quantity)
 
@@ -31,13 +31,57 @@ export default function MenuCell(props) {
         }
         
     }
-
-    return (
-        <TouchableOpacity activeOpacity = {0.7}
-            onPress = { selectedCell }>
-            <View style = { [styles.container, 
-                quantity > 0 ? styles.choiceState : styles.defaultState
-                ]} >
+    if (isPromotion == false ) {
+        return (
+            <TouchableOpacity activeOpacity = {0.7}
+                onPress = {selectedCell }>
+                <View style = { [styles.container, 
+                    quantity > 0 ? styles.choiceState : styles.defaultState
+                    ]} >
+                    
+                    <Image style = {styles.img}
+                        source={{
+                            uri: C.GET_IMAGE(product.url),
+                        }} 
+                    />
+    
+                    <View style = {styles.contentView}>
+                        <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
+                        <Text style = {styles.typeText}>Type: {product.type}</Text>
+    
+                        {product.sale_price == null ? 
+                            <Text style = {styles.priceText}>$ {product.price} <Text style = {styles.vndText}>VND</Text></Text> 
+                            :
+                            <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
+                        }
+    
+                        <View style = {styles.quantityView}>
+                            <TouchableWithoutFeedback
+                                onPress = { handleMinus} >
+                                <Icons name = {'minuscircleo'}
+                                    size = {18}
+                                    color = {'rgb(0, 0, 0)'}
+                                    style = {styles.quantityIcon} />
+                            </TouchableWithoutFeedback>
+    
+                            <Text style = {styles.quantityText} >{quantity}</Text>
+    
+                            <TouchableWithoutFeedback
+                                onPress = { handleAdd } >
+                                <Icons name = {'pluscircleo'}
+                                    size = {18}
+                                    color = {'rgb(0, 0, 0)'}
+                                    style = {styles.quantityIcon} />
+                            </TouchableWithoutFeedback>
+                        </View>
+                        
+                    </View>
+                </View>
+            </TouchableOpacity>
+        );
+    } else {
+        return (
+            <View style = { [styles.container, styles.defaultState ]} >
                 
                 <Image style = {styles.img}
                     source={{
@@ -48,36 +92,13 @@ export default function MenuCell(props) {
                 <View style = {styles.contentView}>
                     <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
                     <Text style = {styles.typeText}>Type: {product.type}</Text>
-                    {product.sale_price == null ? 
-                        <Text style = {styles.priceText}>$ {product.price}</Text> 
-                        :
-                        <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.salePriceText}>$ {product.price}</Text></Text>
-                    }
-
-                    <View style = {styles.quantityView}>
-                        <TouchableWithoutFeedback
-                            onPress = { handleMinus} >
-                            <Icons name = {'minuscircleo'}
-                                size = {18}
-                                color = {'rgb(0, 0, 0)'}
-                                style = {styles.quantityIcon} />
-                        </TouchableWithoutFeedback>
-
-                        <Text style = {styles.quantityText} >{quantity}</Text>
-
-                        <TouchableWithoutFeedback
-                            onPress = { handleAdd } >
-                            <Icons name = {'pluscircleo'}
-                                size = {18}
-                                color = {'rgb(0, 0, 0)'}
-                                style = {styles.quantityIcon} />
-                        </TouchableWithoutFeedback>
-                    </View>
+                    <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
                     
                 </View>
             </View>
-        </TouchableOpacity>
-    );
+        );
+    }
+    
 }
 
 const styles = StyleSheet.create({
@@ -107,6 +128,10 @@ const styles = StyleSheet.create({
     },
     priceText: {
         fontSize: 18
+    },
+    vndText: {
+        fontSize: 14,
+        fontStyle: 'italic'
     },
     salePriceText: {
         fontSize: 16,

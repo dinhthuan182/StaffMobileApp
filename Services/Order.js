@@ -11,6 +11,7 @@ export async function getTables() {
         return tableData;
     }catch (e) {
         throw handler(e);
+        return null;
     }
 }
 
@@ -22,6 +23,7 @@ export async function getTableDetail(id) {
         return tableDetail;
     }catch (e) {
         throw handler(e);
+        return null;
     }
 }
 
@@ -39,6 +41,7 @@ export async function getMenus() {
         return menusRes;
     }catch (e) {
         throw handler(e);
+        return null;
     }
 }
 
@@ -57,7 +60,7 @@ export async function postOrders(table_id, orders) {
         return tableDetail;
     }catch (e) {
         throw handler(e);
-        return null
+        return null;
     }
 }
 
@@ -69,7 +72,7 @@ export async function outTable(id) {
         return true;
     }catch (e) {
         throw handler(e);
-        return false
+        return false;
     }
 }
 

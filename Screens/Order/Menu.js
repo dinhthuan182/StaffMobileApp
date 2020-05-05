@@ -93,7 +93,7 @@ export default function Menu(props) {
                 numColumns = {1}
                 renderItem={({ item }) =>
                     <View style = {styles.cell}>
-                        <MenuCell product = {item} onOrdersChange = {onOrdersChange} />
+                        <MenuCell product = {item} onOrdersChange = {onOrdersChange} isPromotion = {false} />
                     </View>}
                 keyExtractor={item => `${item.id}`}
                 contentContainerStyle = {{marginHorizontal: 8}}
