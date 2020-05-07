@@ -16,7 +16,9 @@ export default function PromotionCell(props) {
                 <Text style = { styles.nameText } >{promotion.name}</Text>
                 <Text style = { styles.saleText } >Sale: {promotion.sale_percent * 100}%</Text>
                 <Text style = { styles.desText } >{promotion.description}</Text>
-                <Text style = { styles.timeText } >{promotion.start_at} - {promotion.end_at}</Text>
+                <Text style = {styles.timeTitle}>Time: 
+                    <Text style = { styles.timeText } > {promotion.start_at} - {promotion.end_at}</Text>
+                </Text>
             </View>
         </TouchableOpacity>
     );
@@ -46,6 +48,12 @@ const styles = StyleSheet.create({
         marginTop: 10
     },
     timeText: {
+        fontSize: 15,
+        fontStyle: 'italic',
+        width: '100%',
+        
+    },
+    timeTitle: {
         fontSize: 15,
         fontStyle: 'italic',
         width: '100%',

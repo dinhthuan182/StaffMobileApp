@@ -1,6 +1,8 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Keyboard, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, View, TextInput, Dimensions, TouchableOpacity, TouchableWithoutFeedback, Keyboard, Image, ImageBackground } from 'react-native';
 import Icons from 'react-native-vector-icons/Ionicons'
+
+import app_logo from '../../assets/app_logo.png'
 
 import Splash from '../Splash'
 
@@ -16,8 +18,8 @@ export default function Login(props) {
 
     const [loading, setLoading] = useState(false);
     const [hidePass, setHidePass] = useState(true);
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
+    const [username, setUsername] = useState("thuanadmin");
+    const [password, setPassword] = useState("123456789");
     const [error, setError] = useState("");
     const {state, handleLogin } = useAuth();
 
@@ -66,8 +68,10 @@ export default function Login(props) {
         <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
             <View style={styles.container}>
                 {loading ? <Splash/>: null }
-                
+                <ImageBackground  source = { app_logo } style = {styles.imgLogo} >
                 <Text style = {styles.appTitle}>Cafe Staff App</Text>
+                </ImageBackground >
+                
             
                 <View style = {styles.inputContainer} >
                     <Icons name = {'ios-person'} 
@@ -129,13 +133,22 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: 'rgb(134, 85, 252)',
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
+    },
+    imgLogo: {
+        height: 300,
+        width: 300,
+        alignItems: 'center',
+        justifyContent: 'flex-end',
+        marginTop: 40,
+        marginBottom: 20
     },
     appTitle: {
-        fontSize: 30,
+        fontSize: 27,
         color: 'white',
         fontWeight: 'bold',
-        marginBottom: 50
+        position: 'absolute',
+        paddingBottom: 30   
     },
     inputContainer: {
         marginTop: 10,

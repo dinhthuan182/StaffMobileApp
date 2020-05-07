@@ -4,6 +4,7 @@ import { StyleSheet, TouchableOpacity, Text } from 'react-native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import AntDesign from 'react-native-vector-icons/AntDesign'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 // login
 import Login from './Screens/Auth/Login';
@@ -143,8 +144,18 @@ function setProfileStack(props) {
 
             <OrderStack.Screen name = "Profile" 
                 component = {Profile}
-                options = {() => ({
+                options = {({route}) => ({
                     title: "Profile",
+                    headerRight: () => (
+                        <TouchableOpacity 
+                            onPress={() => route.params.logout()}
+                            style = {styles.logoutView}>
+                            <AntDesign name = {'logout'}
+                            size = {20}
+                            color = {'white'} />
+                            <Text style = {styles.logoutText}> Logout</Text>
+                        </TouchableOpacity>
+                    ),
                 })}
             />
         </ProfileStack.Navigator>
@@ -215,5 +226,14 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold'
+    },
+    logoutView: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingRight: 15
+    },
+    logoutText: {
+        fontSize: 18,
+        color:'white',
     },
 })

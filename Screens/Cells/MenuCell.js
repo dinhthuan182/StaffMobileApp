@@ -83,7 +83,7 @@ export default function MenuCell(props) {
         return (
             <View style = { [styles.container, styles.defaultState ]} >
                 
-                <Image style = {styles.img}
+                <Image style = {styles.img2}
                     source={{
                         uri: C.GET_IMAGE(product.url),
                     }} 
@@ -113,6 +113,10 @@ const styles = StyleSheet.create({
         height: 120,
         width: 120
     },
+    img2: {
+        height: 100,
+        width: 100
+    },
     contentView: {
         marginHorizontal: 10,
         marginBottom: 10,
@@ -121,7 +125,7 @@ const styles = StyleSheet.create({
     nameText: {
         fontSize: 20,
         fontWeight: 'bold',
-        width: '97%',
+        width: '100%',
     },
     typeText: {
         fontStyle: 'italic'

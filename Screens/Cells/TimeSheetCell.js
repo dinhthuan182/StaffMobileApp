@@ -5,9 +5,9 @@ export default function TimeSheetCell(props) {
     const {sheetItem} = props
 
     return (
-        <View style = {[styles.container, (typeof(sheetItem.header) === "undefined") ? styles.normalSheetView : styles.headerSheetView ]}>
+        <View style = {[styles.container, (typeof(sheetItem.header) === "undefined") ? (typeof(sheetItem.isAfter) === "undefined") ? styles.normalSheetView : styles.doneSheetView : styles.headerSheetView ]}>
             <Text style = {[ styles.dayText, 
-                (typeof(sheetItem.header) === "undefined") ? {} : styles.headerSheet]} >
+                (typeof(sheetItem.header) === "undefined") ? null : styles.headerSheet]} >
                 {sheetItem.day}
             </Text>
             <Text style = {[ styles.dateText, 
@@ -16,11 +16,11 @@ export default function TimeSheetCell(props) {
             </Text>
             <Text style = {[styles.timeText, 
                 (typeof(sheetItem.header) === "undefined") ? {} : styles.headerSheet]} >
-                 {(typeof(sheetItem.start) === "undefined")? 'off' : sheetItem.start + ' - ' + sheetItem.end}
+                 {(sheetItem.start_time == null) ? null : sheetItem.start_time + ' - ' + sheetItem.end_time}
             </Text>
             <Text style = {[styles.totalText, 
                 (typeof(sheetItem.header) === "undefined") ? {} : styles.headerSheet]} >
-                {(typeof(sheetItem.start) === "undefined")? 0 : sheetItem.total}
+                {(sheetItem.start_time == null) ? null : sheetItem.total_time}
             </Text>
         </View>
     );
@@ -36,6 +36,9 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(134, 85, 252)'
     },
     normalSheetView: {
+        backgroundColor: 'white'
+    },
+    doneSheetView: {
         backgroundColor: 'rgba(104, 104, 104, 0.3)'
     },
     headerSheet: {

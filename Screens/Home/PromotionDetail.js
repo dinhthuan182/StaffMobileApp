@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, Text, Alert } from 'react-native';
+import { StyleSheet, View, FlatList, SafeAreaView, ScrollView, Text, Alert } from 'react-native';
 
 import MenuCell from '../Cells/MenuCell'
 import Splash from '../Splash';
@@ -17,21 +17,27 @@ export default function PromotionDetail(props) {
     if (isLoggedIn) {
         return (
             <SafeAreaView style = { styles.container} >
-                <View style = {styles.headerMenu}>
-        <Text style = { styles.saleText } >Sale: {sale_percent*100}%</Text>
-                <Text style = { styles.desText } >{description}</Text>
-                <Text style = { styles.timeText } >{start_at} - {end_at}</Text>
-                </View>
-                <FlatList
-                    data={product_list}
-                    numColumns = {1}
-                    renderItem={({ item }) =>
-                        <View style = {styles.cell}>
-                            <MenuCell product = {item} isPromotion = {true} />
-                        </View>}
-                    keyExtractor={item => `${item.id}`}
-                    contentContainerStyle = {{marginHorizontal: 8}}
+                <ScrollView>
+                    <View style = {styles.headerMenu}>
+                        <Text style = { styles.saleText } >Sale: {sale_percent*100}%</Text>
+                        <Text style = { styles.desText } >{description}</Text>
+                        <Text style = {styles.timeTitle}>Time: 
+                            <Text style = { styles.timeText } > {start_at} - {end_at}</Text>
+                        </Text>
+                    </View>
+                    <FlatList
+                        data={product_list}
+                        numColumns = {1}
+                        renderItem={({ item }) =>
+                            <View style = {styles.cell}>
+                                <MenuCell product = {item} isPromotion = {true} />
+                            </View>}
+                        keyExtractor={item => `${item.id}`}
+                        contentContainerStyle = {{marginHorizontal: 8}}
+                        nestedScrollEnabled = {true}
                     />
+                </ScrollView>
+                
             </SafeAreaView>
         );
     } else {
@@ -63,14 +69,20 @@ const styles = StyleSheet.create({
         width: '100%'
     },
     desText: {
-        fontSize: 14,
+        fontSize: 16,
         width: '100%',
         marginTop: 5
     },
     timeText: {
-        fontSize: 15,
+        fontSize: 17,
         fontStyle: 'italic',
         width: '100%',
         marginTop: 5
+    },
+    timeTitle: {
+        fontSize: 17,
+        fontStyle: 'italic',
+        width: '100%',
+        marginTop: 10
     },
 })
