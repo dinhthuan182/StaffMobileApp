@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, FlatList, View, Alert } from 'react-native';
+import Pusher from 'pusher-js/react-native';
+import * as C from '../../Constants';
 
 import TableCell from '../Cells/TableCell'
 import Splash from '../Splash'
@@ -13,19 +15,35 @@ export default function Tables(props) {
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(false);
 
+    console.disableYellowBox = true
+    // pusher config
+    // Enable pusher logging - don't include this in production
+    Pusher.logToConsole = true;
+
+    var pusher = new Pusher(C.PUSHER_APP_KEY, {
+        cluster: C.PUSHER_APP_CLUSTER
+    });
+
+    var channel = pusher.subscribe(C.PUSHER_APP_CHANNEL);
+    channel.bind(C.PUSHER_GET_TABLES_EVENT, function(data) {
+        fetchData();
+    });
+
     useEffect(() => {
+        setLoading(true)
         fetchData()
+        setLoading(false)
+
+        return () => {
+            channel.unbind(C.PUSHER_GET_TABLES_EVENT)
+        };
     }, [])
 
     const fetchData = async () => {
-        setLoading(true)
-
         let allTable = await api.getTables();
         if (allTable != null) {
             setTables(allTable)
         }
-        
-        setLoading(false)
     }
 
     const moveToDetail = async (id) => {
@@ -37,11 +55,23 @@ export default function Tables(props) {
         let detail = await api.getTableDetail(id);
         
         if(detail != null) {
-            navigate('TableDetail', {
-                titleHeader: `Table ${item[0].name}`,
-                table: item[0],
-                detail: detail
-            })
+            if (typeof detail === 'string' || detail instanceof String) {
+                Alert.alert(
+                    "Notification",
+                    detail,
+                    [
+                        { text: "Ok"}
+                    ],
+                    { cancelable: false }
+                );
+            } else {
+                navigate('TableDetail', {
+                    titleHeader: `Table ${item[0].name}`,
+                    table: item[0],
+                    detail: detail
+                })
+            }
+            
         } else {
             Alert.alert(
                 "Warning",

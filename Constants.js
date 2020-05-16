@@ -1,5 +1,4 @@
 import React from 'react';
-import { exp } from 'react-native-reanimated';
 
 //API URL
 export const ROOT_URL = 'http://cafe-management-system.herokuapp.com';
@@ -27,3 +26,10 @@ export const GET_SCHEDULES = `${API_URL}/schedules`;
 
 // General
 export const GET_IMAGE = (url) => { return `${ROOT_URL}/images/products/${url}` };
+
+
+// Pusher
+export const PUSHER_APP_KEY = '625e6f2e093b6e564050';
+export const PUSHER_APP_CLUSTER = 'ap1';
+export const PUSHER_APP_CHANNEL = 'mobile';
+export const PUSHER_GET_TABLES_EVENT = 'changeStateTable-event';

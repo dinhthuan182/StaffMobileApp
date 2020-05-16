@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { StyleSheet, View, FlatList, SafeAreaView, Text, TouchableWithoutFeedback, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, FlatList, Text, TouchableWithoutFeedback, ScrollView } from 'react-native';
 import Icons from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 
@@ -15,6 +15,7 @@ export default function Profile(props) {
     const {isLoggedIn, user} = state;
 
     const [timeSheet, setTimeSheet] = useState([]);
+    const [totalHour, setTotalHour] = useState(0)
     const [startDay, setStartDay] = useState('');
     const [EndDate, setEndDate] = useState(``);
     const [numsOfWeek, setNumsOfWeek] = useState(0)
@@ -33,25 +34,28 @@ export default function Profile(props) {
         if (numsOfWeek > 0) {
             const schedules = await profileApi.getSchedules(user.id, moment().subtract(numsOfWeek, 'weeks').startOf('isoWeek').format('DD-MM-YYYY'), moment().subtract(numsOfWeek, 'weeks').endOf('isoWeek').format('DD-MM-YYYY'));
             if (schedules != null) {
-                setTimeSheet(schedules);
-                setEndDate(`${moment().subtract(numsOfWeek, 'weeks').endOf('isoWeek').format('DD-MM-YYYY')}`);
-                setStartDay(`${moment().subtract(numsOfWeek, 'weeks').startOf('isoWeek').format('DD-MM')}`);
+                setTimeSheet(schedules[0]);
+                setTotalHour(schedules[1])
+                setEndDate(`${moment().subtract(numsOfWeek, 'weeks').endOf('isoWeek').format('DD/MM/YYYY')}`);
+                setStartDay(`${moment().subtract(numsOfWeek, 'weeks').startOf('isoWeek').format('DD/MM')}`);
             }
         }else if (numsOfWeek == -1){
             const schedules = await profileApi.getSchedules(user.id, moment().add(1, 'weeks').startOf('isoWeek').format('DD-MM-YYYY'), moment().add(1, 'weeks').endOf('isoWeek').format('DD-MM-YYYY'));
             if (schedules != null) {
-                setTimeSheet(schedules);
-                setEndDate(`${moment().add(1, 'weeks').endOf('isoWeek').format('DD-MM-YYYY')}`);
-                setStartDay(`${moment().add(1, 'weeks').startOf('isoWeek').format('DD-MM')}`);
+                setTimeSheet(schedules[0]);
+                setTotalHour(schedules[1])
+                setEndDate(`${moment().add(1, 'weeks').endOf('isoWeek').format('DD/MM/YYYY')}`);
+                setStartDay(`${moment().add(1, 'weeks').startOf('isoWeek').format('DD/MM')}`);
             }
         } else {
             const schedules = await profileApi.getSchedules(user.id, moment().startOf('isoWeek').format('DD-MM-YYYY'), moment().endOf('isoWeek').format('DD-MM-YYYY'));
             if (schedules != null) {
-                setTimeSheet(schedules);
-                setEndDate(`${moment().endOf('isoWeek').format('DD-MM-YYYY')}`);
-                setStartDay(`${moment().startOf('isoWeek').format('DD-MM')}`);
+                setTimeSheet(schedules[0]);
+                setEndDate(`${moment().endOf('isoWeek').format('DD/MM/YYYY')}`);
+                setStartDay(`${moment().startOf('isoWeek').format('DD/MM')}`);
+                setTotalHour(schedules[1])
             }
-        }
+        } 
     }
 
     const beforeWeek = () => {
@@ -69,47 +73,53 @@ export default function Profile(props) {
 
     if (isLoggedIn) {
         return (
-            <SafeAreaView style = { styles.container} >
-                
-                <View style = {styles.headerProfile}>
-                    <Text style = {styles.UsernameText}>{user.name}</Text>
-                    <Text style = {styles.roleText}>{user.role}</Text>
-                </View>
-                
-                <Text style = {styles.timeSheetTitle}>Schedule</Text>
-                <View style = {styles.timeLineView}>
-                    <TouchableWithoutFeedback
-                        onPress = {() => beforeWeek()}>
-                        <Icons name = {'caretleft'}
+            <View style = { styles.container} >
+                <ScrollView>
+                    <View style = {styles.headerProfile}>
+                        <Text style = {styles.UsernameText}>{user.name}</Text>
+                        <Text style = {styles.roleText}>{user.role}</Text>
+                    </View>
+                    
+                    <Text style = {styles.timeSheetTitle}>Schedule</Text>
+                    <View style = {styles.timeLineView}>
+                        <TouchableWithoutFeedback
+                            onPress = {() => beforeWeek()}>
+                            <Icons name = {'caretleft'}
+                                size = {20}
+                                color = {'rgb(104, 104, 104)'} />
+                        </TouchableWithoutFeedback>
+
+                        <Text style = {styles.timeLineText}>
+                            <Text>{startDay} </Text>
+                            <Icons name = {'arrowright'}
+                                size = {18}
+                                color = {'rgb(104, 104, 104)'} />
+                            <Text> {EndDate}</Text>
+                        </Text>
+                        
+                        <TouchableWithoutFeedback
+                            onPress = {() => afterWeek()}>
+                            <Icons name = {'caretright'}
                             size = {20}
                             color = {'rgb(104, 104, 104)'} />
-                    </TouchableWithoutFeedback>
-
-                    <Text style = {styles.timeLineText}>
-                        <Text>{startDay} </Text>
-                        <Icons name = {'arrowright'}
-                            size = {18}
-                            color = {'rgb(104, 104, 104)'} />
-                        <Text> {EndDate}</Text>
-                    </Text>
-                    
-                    <TouchableWithoutFeedback
-                        onPress = {() => afterWeek()}>
-                        <Icons name = {'caretright'}
-                        size = {20}
-                        color = {'rgb(104, 104, 104)'} />
-                    </TouchableWithoutFeedback>
-                    
-                </View>
-                <FlatList
-                    data={timeSheet}
-                    scrollEnabled = {false}
-                    numColumns = {1}
-                    renderItem={({ item }) => <TimeSheetCell sheetItem = {item}/> }
-                    keyExtractor={item => item.day}
-                    contentContainerStyle = {{ borderWidth: 1}}
-                />
-            </SafeAreaView>
+                        </TouchableWithoutFeedback>
+                        
+                    </View>
+                    <FlatList
+                        data={timeSheet}
+                        scrollEnabled = {false}
+                        numColumns = {1}
+                        renderItem={({ item }) => <TimeSheetCell sheetItem = {item}/> }
+                        keyExtractor={item => item.day}
+                        contentContainerStyle = {{ borderWidth: 1}}
+                    />
+                    <View style = {styles.totalView}>
+                        <Text style = { styles.totalText}>Total : {totalHour} hour</Text>
+                    </View>
+                </ScrollView>
+                
+               
+            </View>
         ); 
     } else {
         return (
@@ -141,14 +151,28 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontStyle: 'italic',
         fontWeight: 'bold',
+        width: '100%',
+        textAlign: 'center',
     },
     timeLineView: {
         flexDirection: 'row',
         paddingVertical: 10,
-        alignItems: 'center'
+        alignItems: 'center',
+        justifyContent: 'center',
+        width: '100%'
     },
     timeLineText: {
         fontSize: 19,
         paddingHorizontal: 10
+    },
+    totalView: {
+        width: '100%',
+        justifyContent: 'flex-end',
+        flexDirection: 'row',
+        marginTop: 10,
+        paddingHorizontal: 16
+    },
+    totalText: {
+        fontSize: 18
     },
 })

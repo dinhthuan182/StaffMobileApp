@@ -7,7 +7,7 @@ export default function TimeSheetCell(props) {
     return (
         <View style = {[styles.container, (typeof(sheetItem.header) === "undefined") ? (typeof(sheetItem.isAfter) === "undefined") ? styles.normalSheetView : styles.doneSheetView : styles.headerSheetView ]}>
             <Text style = {[ styles.dayText, 
-                (typeof(sheetItem.header) === "undefined") ? null : styles.headerSheet]} >
+                (typeof(sheetItem.header) === "undefined") ? null : styles.headerDaySheet]} >
                 {sheetItem.day}
             </Text>
             <Text style = {[ styles.dateText, 
@@ -46,6 +46,10 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         textAlign: 'center'
     },
+    headerDaySheet: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
     dayText: {
         fontSize: 17,
         width: '27%',
@@ -55,14 +59,14 @@ const styles = StyleSheet.create({
     },
     dateText: {
         fontSize: 17,
-        width: '30%',
+        width: '20%',
         textAlign: 'center',
         paddingVertical: 10,
         borderRightWidth: 1
     },
     timeText: {
         fontSize: 17,
-        width: '30%',
+        width: '35%',
         textAlign: 'center',
         paddingVertical: 10,
         borderRightWidth: 1
