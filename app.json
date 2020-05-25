@@ -2,27 +2,15 @@
   "expo": {
     "name": "StaffMobileApp",
     "slug": "StaffMobileApp",
-    "platforms": [
-      "ios",
-      "android",
-      "web"
-    ],
     "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "icon": "./assets/cafe_logo.png",
     "ios": {
-      "supportsTablet": true
+      "bundleIdentifier": "com.tdtu.project2",
+      "buildNumber": "1.0.0"
+    },
+    "android": {
+      "package": "com.tdtu.project2",
+      "versionCode": 1
     }
   }
 }

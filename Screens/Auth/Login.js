@@ -18,8 +18,8 @@ export default function Login(props) {
 
     const [loading, setLoading] = useState(false);
     const [hidePass, setHidePass] = useState(true);
-    const [username, setUsername] = useState("thuanadmin");
-    const [password, setPassword] = useState("123456789");
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const {state, handleLogin } = useAuth();
 
@@ -186,7 +186,7 @@ const styles = StyleSheet.create({
     },
     btnLoginText: {
         color: 'rgb(134, 85, 252)',
-        fontSize: 18,
+        fontSize: 20,
         textAlign: 'center',
         fontWeight: 'bold'
     },

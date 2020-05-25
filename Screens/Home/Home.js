@@ -25,6 +25,7 @@ export default function Home(props) {
         let allPromotions = await homeApi.getPromotions()
         if (allPromotions != null) {
             setPromotions(allPromotions)
+            setLoading(false)
         }
         
         setLoading(false)

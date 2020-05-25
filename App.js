@@ -5,6 +5,7 @@ import AuthProvider from "./Providers/Auth";
 import MainTab from './AppNavigator'
 
 export default function App() {
+  console.disableYellowBox = true
   return (
     <AuthProvider>
       <NavigationContainer>

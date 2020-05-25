@@ -149,7 +149,7 @@ export default function ProductCell(props) {
                         
                         <Text style = {styles.typeText}>Type: {product.type}</Text>
     
-                        {product.sale_price == null ? 
+                        {(product.sale_price == null || product.sale_price == product.price) ? 
                             <Text style = {styles.priceText}>$ {product.price} <Text style = {styles.vndText}>VND</Text></Text> 
                             :
                             <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
@@ -182,7 +182,7 @@ export default function ProductCell(props) {
                     <TextInput placeholder = {'Note'}
                         onChangeText = {text => noteChange(text)}
                         multiline
-                        value = {noteText}
+                        value = {noteText == "Note" ? "": noteText}
                         editable = {stateChange == 0 ? false : true}
                         style = {styles.noteInput} />
                 </View>

@@ -123,8 +123,8 @@ export default function Profile(props) {
         ); 
     } else {
         return (
-            <SafeAreaView style = { styles.container} >
-            </SafeAreaView>
+            <View style = { styles.container} >
+            </View>
         ); 
     }
 }

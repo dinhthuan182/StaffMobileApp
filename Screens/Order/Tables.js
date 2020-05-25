@@ -15,10 +15,9 @@ export default function Tables(props) {
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    console.disableYellowBox = true
     // pusher config
     // Enable pusher logging - don't include this in production
-    Pusher.logToConsole = true;
+    Pusher.logToConsole = false;
 
     var pusher = new Pusher(C.PUSHER_APP_KEY, {
         cluster: C.PUSHER_APP_CLUSTER
