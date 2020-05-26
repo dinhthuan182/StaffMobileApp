@@ -30,7 +30,7 @@ export default function PromotionDetail(props) {
                         numColumns = {1}
                         renderItem={({ item }) =>
                             <View style = {styles.cell}>
-                                <MenuCell product = {item} isPromotion = {true} />
+                                <MenuCell product = {item} isPromotion = {true} salePercent = {sale_percent} />
                             </View>}
                         keyExtractor={item => `${item.id}`}
                         contentContainerStyle = {{marginHorizontal: 8}}

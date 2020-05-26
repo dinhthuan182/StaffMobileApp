@@ -4,6 +4,7 @@ import Icons from 'react-native-vector-icons/AntDesign';
 import moment from 'moment';
 
 import { useAuth } from "../../Providers/Auth";
+import Splash from '../Splash';
 
 import * as api from '../../Services/Auth';
 import * as profileApi from '../../Services/Profile';
@@ -19,6 +20,7 @@ export default function Profile(props) {
     const [startDay, setStartDay] = useState('');
     const [EndDate, setEndDate] = useState(``);
     const [numsOfWeek, setNumsOfWeek] = useState(0)
+    const [isLoading, setLoading] = useState(false);
 
     useEffect(() => { 
         props.navigation.setParams({ logout: logout});
@@ -31,6 +33,7 @@ export default function Profile(props) {
     }
 
     const getSchedules = async ()=> {
+        setLoading(true)
         if (numsOfWeek > 0) {
             const schedules = await profileApi.getSchedules(user.id, moment().subtract(numsOfWeek, 'weeks').startOf('isoWeek').format('DD-MM-YYYY'), moment().subtract(numsOfWeek, 'weeks').endOf('isoWeek').format('DD-MM-YYYY'));
             if (schedules != null) {
@@ -55,7 +58,8 @@ export default function Profile(props) {
                 setStartDay(`${moment().startOf('isoWeek').format('DD/MM')}`);
                 setTotalHour(schedules[1])
             }
-        } 
+        }
+        setLoading(false) 
     }
 
     const beforeWeek = () => {
@@ -74,6 +78,7 @@ export default function Profile(props) {
     if (isLoggedIn) {
         return (
             <View style = { styles.container} >
+                {isLoading ? <Splash/> : null}
                 <ScrollView>
                     <View style = {styles.headerProfile}>
                         <Text style = {styles.UsernameText}>{user.name}</Text>

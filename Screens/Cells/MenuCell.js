@@ -5,7 +5,7 @@ import Icons from 'react-native-vector-icons/AntDesign';
 import * as C from '../../Constants'
 
 export default function MenuCell(props) {
-    const { product, onOrdersChange, isPromotion } = props;
+    const { product, onOrdersChange, isPromotion, salePercent } = props;
 
     const [quantity, setQuantity] = useState(product.quantity)
 
@@ -92,7 +92,7 @@ export default function MenuCell(props) {
                 <View style = {styles.contentView}>
                     <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
                     <Text style = {styles.typeText}>Type: {product.type}</Text>
-                    <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
+                    <Text style = {styles.priceText}>$ { product.price - product.price * salePercent} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
                     
                 </View>
             </View>
