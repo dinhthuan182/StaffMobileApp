@@ -136,19 +136,19 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
     imgLogo: {
-        height: 300,
-        width: 300,
+        height: 250,
+        width: 250,
         alignItems: 'center',
         justifyContent: 'flex-end',
         marginTop: 40,
         marginBottom: 20
     },
     appTitle: {
-        fontSize: 27,
+        fontSize: 25,
         color: 'white',
         fontWeight: 'bold',
         position: 'absolute',
-        paddingBottom: 30   
+        paddingBottom: 27   
     },
     inputContainer: {
         marginTop: 10,

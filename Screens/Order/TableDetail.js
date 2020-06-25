@@ -12,7 +12,7 @@ function PostProduct(id, quantity, note) {
     this.id = id;
     this.quantity = quantity;
     this.note = note;
- }
+}
 
 export default function TableDetail(props) {
     const {state} = useAuth();
@@ -25,6 +25,7 @@ export default function TableDetail(props) {
     const [loading, setLoading] = useState(false);
     const [total, setTotal] = useState(current_sale_total == null ? 0 : current_sale_total)
     const [orderList, setOrderList] = useState(product_list);
+
     var today = new Date();
     var dd = String(today.getDate()).padStart(2, '0');
     var mm = String(today.getMonth() + 1).padStart(2, '0');
@@ -36,23 +37,29 @@ export default function TableDetail(props) {
 
     useEffect(() => {
         navigation.setParams({ submit: submitOrders, outTable: onOutTable });
-
-        updateOrder();
+        updateOrder()
     }, [newOrder])
 
     const submitOrders = async () => {
         setLoading(true)
-        postList = []
+        var postList = []
         var submitFlag = false
+
         orderList.forEach(item => {
             
             if (item.isUpdate == true || item.isNew == true) {
                 submitFlag = true
             }
             
-           let p = new PostProduct(item.id, item.quantity, typeof item.note == 'undefined' ? "Note": item.note);
+           let p = new PostProduct(item.id, item.quantity, (typeof item.note == 'undefined' || item.note == null) ? "Note": item.note);
            postList.push(p);
         });
+        console.log("newlist: " + orderList.length + "--" + product_list.length)
+        if (orderList.length != product_list.length) {
+            console.log("newlist")
+            postList = orderList
+            submitFlag = true
+        }
 
         if (submitFlag == true) {
             const res = await api.postOrders(table.id, postList);
@@ -115,6 +122,7 @@ export default function TableDetail(props) {
                 const newList = orderList.filter(item => {
                     return item.id != id
                 });
+                
                 setOrderList(newList);
                 break;
             // new

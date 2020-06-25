@@ -59,11 +59,12 @@ export default function Tables(props) {
                     "Notification",
                     detail,
                     [
-                        { text: "Ok"}
+                        { text: "OK"}
                     ],
                     { cancelable: false }
                 );
             } else {
+                setLoading(false)
                 navigate('TableDetail', {
                     titleHeader: `Table ${item[0].name}`,
                     table: item[0],
@@ -76,7 +77,7 @@ export default function Tables(props) {
                 "Warning",
                 "Please check your network connection.",
                 [
-                    { text: "Ok"}
+                    { text: "OK"}
                 ],
                 { cancelable: false }
             );

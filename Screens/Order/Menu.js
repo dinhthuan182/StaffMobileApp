@@ -8,7 +8,7 @@ import Splash from '../Splash'
 import * as api from '../../Services/Order'
 
 export default function Menu(props) {
-    const {navigation} = props
+    const {navigation, route} = props
 
     const [loading, setLoading] = useState(false);
     const [menus, setMenus] = useState([]);
@@ -28,7 +28,6 @@ export default function Menu(props) {
         const products = menus.filter(item => {
             return item.quantity > 0
         })
-        
         navigation.navigate('TableDetail', {
             newOrder: products
         })

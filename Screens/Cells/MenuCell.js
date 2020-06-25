@@ -50,9 +50,9 @@ export default function MenuCell(props) {
                         <Text style = {styles.typeText}>Type: {product.type}</Text>
     
                         {product.sale_price == null ? 
-                            <Text style = {styles.priceText}>$ {product.price} <Text style = {styles.vndText}>VND</Text></Text> 
+                            <Text style = {styles.priceText}>$ {C.currencyFormat(product.price)}</Text> 
                             :
-                            <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
+                            <Text style = {styles.priceText}>$ {C.currencyFormat(product.sale_price)}  <Text style = {styles.salePriceText}>{C.currencyFormat(product.price)}</Text> </Text>
                         }
     
                         <View style = {styles.quantityView}>
@@ -92,7 +92,7 @@ export default function MenuCell(props) {
                 <View style = {styles.contentView}>
                     <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
                     <Text style = {styles.typeText}>Type: {product.type}</Text>
-                    <Text style = {styles.priceText}>$ { product.price - product.price * salePercent} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
+                    <Text style = {styles.priceText}>$ {C.currencyFormat(product.price - product.price * salePercent)}  <Text style = {styles.salePriceText}>{C.currencyFormat(product.price)}</Text></Text>
                     
                 </View>
             </View>
@@ -132,10 +132,6 @@ const styles = StyleSheet.create({
     },
     priceText: {
         fontSize: 18
-    },
-    vndText: {
-        fontSize: 14,
-        fontStyle: 'italic'
     },
     salePriceText: {
         fontSize: 16,

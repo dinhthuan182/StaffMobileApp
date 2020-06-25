@@ -20,7 +20,7 @@ export default function Home(props) {
     }, [])
 
     const fetchData = async () => {
-        setLoading(true)
+        // setLoading(true)
 
         let allPromotions = await homeApi.getPromotions()
         if (allPromotions != null) {

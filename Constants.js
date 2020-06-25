@@ -33,3 +33,7 @@ export const PUSHER_APP_KEY = '625e6f2e093b6e564050';
 export const PUSHER_APP_CLUSTER = 'ap1';
 export const PUSHER_APP_CHANNEL = 'mobile';
 export const PUSHER_GET_TABLES_EVENT = 'changeStateTable-event';
+
+export function currencyFormat(num) {
+    return num.toFixed(0).replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,') + 'đ'
+}

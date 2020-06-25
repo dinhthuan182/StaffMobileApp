@@ -17,11 +17,11 @@ export async function getTables() {
 
 export async function getTableDetail(id) {
     
-    try{
+    try {
         let res = await axios.get(C.TABLE_DETAIL(id));
         const tableDetail = JSON.parse(JSON.stringify(res.data))
         return tableDetail;
-    }catch (e) {
+    } catch (e) {
         if (e.response.status) {
             return "You have no schedules or you are not check in. \nCan't see the details";
         }
@@ -50,7 +50,8 @@ export async function getMenus() {
 export async function postOrders(table_id, orders) {
     try {
         let formdata = new FormData();
-
+        console.log("orders" )
+        console.log(orders)
         for(let [i, product] of orders.entries()) {
             formdata.append(`product_list[${i}][id]`, product.id)
             formdata.append(`product_list[${i}][quantity]`, product.quantity)
@@ -59,8 +60,11 @@ export async function postOrders(table_id, orders) {
 
         let res = await axios.post(C.POST_ORDER(table_id), formdata);
         const tableDetail = JSON.parse(JSON.stringify(res.data))
+
         return tableDetail;
     }catch (e) {
+        console.log("error log")
+        console.log(e)
         throw handler(e);
         return null;
     }

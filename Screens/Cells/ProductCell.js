@@ -150,9 +150,9 @@ export default function ProductCell(props) {
                         <Text style = {styles.typeText}>Type: {product.type}</Text>
     
                         {(product.sale_price == null || product.sale_price == product.price) ? 
-                            <Text style = {styles.priceText}>$ {product.price} <Text style = {styles.vndText}>VND</Text></Text> 
+                            <Text style = {styles.priceText}>$ {C.currencyFormat(product.price)}</Text> 
                             :
-                            <Text style = {styles.priceText}>$ {product.sale_price} <Text style = {styles.vndText}>VND</Text>  <Text style = {styles.salePriceText}>{product.price}</Text> </Text>
+                            <Text style = {styles.priceText}>$ {C.currencyFormat(product.sale_price)}  <Text style = {styles.salePriceText}>{C.currencyFormat(product.price)}</Text> </Text>
                         }
     
                         <View style = {styles.quantityView}>
