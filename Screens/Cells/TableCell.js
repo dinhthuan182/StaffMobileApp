@@ -26,7 +26,7 @@ export default function Table(props) {
     return (
         <TouchableOpacity 
             activeOpacity = {0.7}
-            onPress = {move} >
+            onPress = {()=> move()} >
             <View style = { styles.container} >
                 <Text style = { styles.tableText } >{table.name}</Text>
                 

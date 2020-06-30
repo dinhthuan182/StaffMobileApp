@@ -49,6 +49,7 @@ export default function Login(props) {
             setPassword("")
             setError("Username and password are incorrect")
         }
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -106,7 +107,7 @@ export default function Login(props) {
                         placeholderTextColor = {'rgba(255, 255, 255, 0.7)'} />
             
                     <TouchableOpacity style = {styles.btnEye}
-                        onPress = { showPassHandle.bind(this) } >
+                        onPress = {() => showPassHandle() } >
                         <Icons name = { hidePass == true ? 'ios-eye': 'ios-eye-off'}
                         size = {26}
                         color = {'rgba(255, 255, 255, 0.7)'}/>
@@ -115,7 +116,6 @@ export default function Login(props) {
                 { (error != "") ? 
                     <Text style = {styles.error}>{error}</Text>: <View/>
                 }
-                
                 
                 <TouchableOpacity 
                     activeOpacity = {0.5}

@@ -15,20 +15,15 @@ export default function Home(props) {
     const [promotions, setPromotions] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    useEffect(() => {
+    useEffect( () => {
         fetchData()
     }, [])
 
     const fetchData = async () => {
-        // setLoading(true)
-
         let allPromotions = await homeApi.getPromotions()
         if (allPromotions != null) {
             setPromotions(allPromotions)
-            setLoading(false)
         }
-        
-        setLoading(false)
     }
 
     const moveToDetail = async (id) => {

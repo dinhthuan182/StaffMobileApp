@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import { StyleSheet, FlatList, View, Alert } from 'react-native';
 import Pusher from 'pusher-js/react-native';
 import * as C from '../../Constants';
+import { useAuth } from "../../Providers/Auth";
 
 import TableCell from '../Cells/TableCell'
 import Splash from '../Splash'
@@ -11,7 +12,7 @@ import * as api from '../../Services/Order'
 export default function Tables(props) {
     const {navigation} = props;
     const {navigate} = navigation;
-
+    const {state } = useAuth();
     const [tables, setTables] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -28,13 +29,13 @@ export default function Tables(props) {
         fetchData();
     });
 
-    useEffect(() => {
+    useEffect(async () => {
         setLoading(true)
-        fetchData()
+        await fetchData()
         setLoading(false)
 
         return () => {
-            channel.unbind(C.PUSHER_GET_TABLES_EVENT)
+            channel.unbind()
         };
     }, [])
 
@@ -52,59 +53,53 @@ export default function Tables(props) {
         })
 
         let detail = await api.getTableDetail(id);
-        
-        if(detail != null) {
-            if (typeof detail === 'string' || detail instanceof String) {
-                Alert.alert(
-                    "Notification",
-                    detail,
-                    [
-                        { text: "OK"}
-                    ],
-                    { cancelable: false }
-                );
-            } else {
-                setLoading(false)
-                navigate('TableDetail', {
-                    titleHeader: `Table ${item[0].name}`,
-                    table: item[0],
-                    detail: detail
-                })
-            }
-            
-        } else {
+
+        if (typeof detail === 'string' || detail instanceof String) {
             Alert.alert(
-                "Warning",
-                "Please check your network connection.",
+                "Notification",
+                detail,
                 [
                     { text: "OK"}
                 ],
                 { cancelable: false }
             );
+        } else {
+            setLoading(false)
+            navigate('TableDetail', {
+                titleHeader: `Table ${item[0].name}`,
+                table: item[0],
+                detail: detail
+            })
         }
         
         setLoading(false)
     }
-
-    return (
-        <View style = {styles.container} >
-            {loading ? <Splash/>: null }
-            <FlatList
-                data={tables}
-                numColumns = {2}
-                renderItem={({ item }) =>
-                    <View style = {styles.cell}>
-                        <TableCell
-                            table = {item}
-                            moveToDetail = {moveToDetail}
-                        />
-                    </View>}
-                keyExtractor={item => item.id}
-                contentContainerStyle = {{marginHorizontal: 8}}
-            />
-        </View>
-        
-    );
+    if (state.isLoggedIn) {
+        return (
+            <View style = {styles.container} >
+                {loading ? <Splash/>: null }
+                <FlatList
+                    data={tables}
+                    numColumns = {2}
+                    renderItem={({ item }) =>
+                        <View style = {styles.cell}>
+                            <TableCell
+                                table = {item}
+                                moveToDetail = {moveToDetail}
+                            />
+                        </View>}
+                    keyExtractor={item => item.id}
+                    contentContainerStyle = {{marginHorizontal: 8}}
+                />
+            </View>
+            
+        );
+    }else {
+        return (
+            <View style = {styles.container} ></View>            
+        );
+    }
+    
 }
 
 const styles = StyleSheet.create({

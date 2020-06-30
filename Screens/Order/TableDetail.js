@@ -54,9 +54,8 @@ export default function TableDetail(props) {
            let p = new PostProduct(item.id, item.quantity, (typeof item.note == 'undefined' || item.note == null) ? "Note": item.note);
            postList.push(p);
         });
-        console.log("newlist: " + orderList.length + "--" + product_list.length)
+        
         if (orderList.length != product_list.length) {
-            console.log("newlist")
             postList = orderList
             submitFlag = true
         }
@@ -82,6 +81,8 @@ export default function TableDetail(props) {
         const result = await api.outTable(table.id)
         if (result == true) {
             navigation.goBack()
+        } else {
+            Alert.alert('Notification', `Table ${table.name} can not back to table list`)
         }
         setLoading(false)
     }
@@ -171,35 +172,40 @@ export default function TableDetail(props) {
         }
     }
 
-    return (
-        <SafeAreaView style = { styles.container} >
-            {loading ? <Splash/>: null }
-            <View style = {styles.headerMenu}>
-                <View>
-                    <Text style = {styles.totalBillText}>Total: {total} <Text style = {styles.smallBillText}>VND</Text></Text>
-                    <Text>Create at: {created_at == null ? today : created_at}</Text>
-                    <Text>Create by: {created_by_name == null ? "" : created_by_name}</Text>
+    if (isLoggedIn) {
+        return (
+            <SafeAreaView style = { styles.container} >
+                {loading ? <Splash/>: null }
+                <View style = {styles.headerMenu}>
+                    <View>
+                        <Text style = {styles.totalBillText}>Total: {total} <Text style = {styles.smallBillText}>VND</Text></Text>
+                        <Text>Create at: {created_at == null ? today : created_at}</Text>
+                        <Text>Create by: {created_by_name == null ? "" : created_by_name}</Text>
+                    </View>
+                    <TouchableOpacity 
+                        onPress = {() => navigation.navigate('Menu', {titleHeader: `Table ${table.name}`})}
+                        activeOpacity = {0.7}
+                        style = {styles.btnMenu} >
+                        <Text style = {styles.btnMenuText}>Open Menu</Text>
+                    </TouchableOpacity>
                 </View>
-                <TouchableOpacity 
-                    onPress = {() => navigation.navigate('Menu', {titleHeader: `Table ${table.name}`})}
-                    activeOpacity = {0.7}
-                    style = {styles.btnMenu} >
-                    <Text style = {styles.btnMenuText}>Open Menu</Text>
-                </TouchableOpacity>
-            </View>
-            <FlatList
-                data={orderList}
-                numColumns = {1}
-                renderItem={({ item }) =>
-                    <View style = {styles.cell}>
-                        <ProductCell product = {item} onUpdateOrder = {onUpdateOrder} />
-                    </View>}
-                keyExtractor={item => `${item.id}`}
-                contentContainerStyle = {{marginHorizontal: 8}}
-                />
-        </SafeAreaView>
-    );
-    
+                <FlatList
+                    data={orderList}
+                    numColumns = {1}
+                    renderItem={({ item }) =>
+                        <View style = {styles.cell}>
+                            <ProductCell product = {item} onUpdateOrder = {onUpdateOrder} />
+                        </View>}
+                    keyExtractor={item => `${item.id}`}
+                    contentContainerStyle = {{marginHorizontal: 8}}
+                    />
+            </SafeAreaView>
+        );
+    } else {
+        return (
+            <SafeAreaView style = { styles.container} ></SafeAreaView>
+        );
+    }
 }
 
 const styles = StyleSheet.create({

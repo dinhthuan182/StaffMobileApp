@@ -137,7 +137,7 @@ export default function ProductCell(props) {
                             <Text style = {styles.nameText} numberOfLines = {0}>{product.name}</Text>
                             { (stateChange != 1 && stateChange != 0) || (user.role == "Admin") || (user.role == "Manager") ? (
                                 <TouchableOpacity 
-                                    onPress = {handleDelete}>
+                                    onPress = {() => handleDelete()}>
                                     <Icons name = {'close'}
                                         size = {23}
                                         color = {'rgb(0, 0, 0)'}
@@ -157,7 +157,7 @@ export default function ProductCell(props) {
     
                         <View style = {styles.quantityView}>
                             <TouchableWithoutFeedback
-                                onPress = { handleMinus} >
+                                onPress = {() => handleMinus()} >
                                 <Icons name = {'minuscircleo'}
                                     size = {18}
                                     color = {'rgb(0, 0, 0)'}
@@ -167,7 +167,7 @@ export default function ProductCell(props) {
                             <Text style = {styles.quantityText} >{quantity}</Text>
     
                             <TouchableWithoutFeedback
-                                onPress = { handleAdd } >
+                                onPress = {() => handleAdd() } >
                                 <Icons name = {'pluscircleo'}
                                     size = {18}
                                     color = {'rgb(0, 0, 0)'}

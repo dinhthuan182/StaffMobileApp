@@ -10,7 +10,6 @@ export async function getTables() {
         const tableData = JSON.parse(JSON.stringify(tables))
         return tableData;
     }catch (e) {
-        throw handler(e);
         return null;
     }
 }
@@ -22,10 +21,13 @@ export async function getTableDetail(id) {
         const tableDetail = JSON.parse(JSON.stringify(res.data))
         return tableDetail;
     } catch (e) {
-        if (e.response.status) {
+        
+        if (e.response.status == 400) {
+            console.log("You have no schedules or you are not check in. \nCan't see the details")
             return "You have no schedules or you are not check in. \nCan't see the details";
         }
-        return null;
+        console.log("Please check your network connection.")
+        return "Please check your network connection.";
     }
 }
 
@@ -42,7 +44,6 @@ export async function getMenus() {
 
         return menusRes;
     }catch (e) {
-        throw handler(e);
         return null;
     }
 }
@@ -50,8 +51,6 @@ export async function getMenus() {
 export async function postOrders(table_id, orders) {
     try {
         let formdata = new FormData();
-        console.log("orders" )
-        console.log(orders)
         for(let [i, product] of orders.entries()) {
             formdata.append(`product_list[${i}][id]`, product.id)
             formdata.append(`product_list[${i}][quantity]`, product.quantity)
@@ -63,9 +62,6 @@ export async function postOrders(table_id, orders) {
 
         return tableDetail;
     }catch (e) {
-        console.log("error log")
-        console.log(e)
-        throw handler(e);
         return null;
     }
 }
@@ -77,17 +73,6 @@ export async function outTable(id) {
         const data = JSON.parse(JSON.stringify(res.data));
         return true;
     }catch (e) {
-        throw handler(e);
         return false;
     }
-}
-
-export function handler(err) {
-    let error = err;
-
-    if (err.response && err.response.data.hasOwnProperty("message"))
-        error = err.response.data;
-    else if (!err.hasOwnProperty("message")) error = err.toJSON();
-
-    return new Error(error.message);
 }

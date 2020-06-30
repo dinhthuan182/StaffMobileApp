@@ -34,7 +34,7 @@ export default function MenuCell(props) {
     if (isPromotion == false ) {
         return (
             <TouchableOpacity activeOpacity = {0.7}
-                onPress = {selectedCell }>
+                onPress = {() => selectedCell() }>
                 <View style = { [styles.container, 
                     quantity > 0 ? styles.choiceState : styles.defaultState
                     ]} >
@@ -57,7 +57,7 @@ export default function MenuCell(props) {
     
                         <View style = {styles.quantityView}>
                             <TouchableWithoutFeedback
-                                onPress = { handleMinus} >
+                                onPress = {() => handleMinus()} >
                                 <Icons name = {'minuscircleo'}
                                     size = {18}
                                     color = {'rgb(0, 0, 0)'}
@@ -67,7 +67,7 @@ export default function MenuCell(props) {
                             <Text style = {styles.quantityText} >{quantity}</Text>
     
                             <TouchableWithoutFeedback
-                                onPress = { handleAdd } >
+                                onPress = {() => handleAdd() } >
                                 <Icons name = {'pluscircleo'}
                                     size = {18}
                                     color = {'rgb(0, 0, 0)'}
@@ -118,14 +118,16 @@ const styles = StyleSheet.create({
         width: 100
     },
     contentView: {
-        marginHorizontal: 10,
+        marginLeft: 10,
         marginBottom: 10,
         justifyContent: 'space-between',
+        flex: 1,
     },
     nameText: {
         fontSize: 20,
         fontWeight: 'bold',
-        width: '100%',
+        width: '90%',
+        
     },
     typeText: {
         fontStyle: 'italic'

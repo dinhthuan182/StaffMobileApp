@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { StyleSheet, View, FlatList, SafeAreaView, TouchableOpacity, Text } from 'react-native';
 import SegmentedControlTab from 'react-native-segmented-control-tab';
+import { useAuth } from "../../Providers/Auth";
 
 import MenuCell from '../Cells/MenuCell'
 import Splash from '../Splash'
@@ -9,6 +10,7 @@ import * as api from '../../Services/Order'
 
 export default function Menu(props) {
     const {navigation, route} = props
+    const {state } = useAuth();
 
     const [loading, setLoading] = useState(false);
     const [menus, setMenus] = useState([]);
@@ -71,34 +73,39 @@ export default function Menu(props) {
         });
         setMenus(updateMenus);
     }
-
-    return (
-        <SafeAreaView style = { styles.container} >
-            {loading ? <Splash/>: null }
-            <View style = {styles.headerMenu}>
-                <SegmentedControlTab
-                    values = {['All', 'Drink', 'Food']}
-                    selectedIndex = {filterIndex}
-                    onTabPress = {handleIndexChange}
-                    tabsContainerStyle={styles.tabsContainerStyle}
-                    tabStyle={styles.tabStyle}
-                    activeTabStyle={styles.activeTabStyle}
-                    tabTextStyle={styles.tabTextStyle}
-                    activeTabTextStyle={styles.activeTabTextStyle}
+    if (state.isLoggedIn) {
+        return (
+            <SafeAreaView style = { styles.container} >
+                {loading ? <Splash/>: null }
+                <View style = {styles.headerMenu}>
+                    <SegmentedControlTab
+                        values = {['All', 'Drink', 'Food']}
+                        selectedIndex = {filterIndex}
+                        onTabPress = {handleIndexChange}
+                        tabsContainerStyle={styles.tabsContainerStyle}
+                        tabStyle={styles.tabStyle}
+                        activeTabStyle={styles.activeTabStyle}
+                        tabTextStyle={styles.tabTextStyle}
+                        activeTabTextStyle={styles.activeTabTextStyle}
+                    />
+                </View>
+                <FlatList
+                    data={menusFilter}
+                    numColumns = {1}
+                    renderItem={({ item }) =>
+                        <View style = {styles.cell}>
+                            <MenuCell product = {item} onOrdersChange = {onOrdersChange} isPromotion = {false} />
+                        </View>}
+                    keyExtractor={item => `${item.id}`}
+                    contentContainerStyle = {{marginHorizontal: 8}}
                 />
-            </View>
-            <FlatList
-                data={menusFilter}
-                numColumns = {1}
-                renderItem={({ item }) =>
-                    <View style = {styles.cell}>
-                        <MenuCell product = {item} onOrdersChange = {onOrdersChange} isPromotion = {false} />
-                    </View>}
-                keyExtractor={item => `${item.id}`}
-                contentContainerStyle = {{marginHorizontal: 8}}
-            />
-        </SafeAreaView>
-    );   
+            </SafeAreaView>
+        );  
+    }else {
+        return (
+            <View style = {styles.container} ></View>            
+        );
+    } 
 }
 
 const styles = StyleSheet.create({

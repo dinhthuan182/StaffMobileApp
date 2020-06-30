@@ -11,7 +11,7 @@ export default function PromotionCell(props) {
     return (
         <TouchableOpacity 
             activeOpacity = {0.7}
-            onPress = {move} >
+            onPress = {() => move()} >
             <View style = { styles.container} >
                 <Text style = { styles.nameText } >{promotion.name}</Text>
                 <Text style = { styles.saleText } >Sale: {promotion.sale_percent * 100}%</Text>
