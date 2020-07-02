@@ -53,7 +53,7 @@ export default function Tables(props) {
 
         let detail = await api.getTableDetail(id);
 
-        if (typeof detail === 'string' || detail instanceof String) {
+        if (typeof detail === 'string') {
             Alert.alert(
                 "Notification",
                 detail,
