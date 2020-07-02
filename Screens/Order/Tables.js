@@ -25,25 +25,24 @@ export default function Tables(props) {
     });
 
     var channel = pusher.subscribe(C.PUSHER_APP_CHANNEL);
-    channel.bind(C.PUSHER_GET_TABLES_EVENT, function(data) {
-        fetchData();
-    });
-
-    useEffect(async () => {
-        setLoading(true)
-        await fetchData()
-        setLoading(false)
-
+    
+    useEffect(() => {
+        fetchData()
+        channel.bind(C.PUSHER_GET_TABLES_EVENT, function(data) {
+            fetchData();
+        });
         return () => {
             channel.unbind()
         };
     }, [])
 
     const fetchData = async () => {
+        setLoading(true)
         let allTable = await api.getTables();
         if (allTable != null) {
             setTables(allTable)
         }
+        setLoading(false)
     }
 
     const moveToDetail = async (id) => {
@@ -92,7 +91,6 @@ export default function Tables(props) {
                     contentContainerStyle = {{marginHorizontal: 8}}
                 />
             </View>
-            
         );
     }else {
         return (

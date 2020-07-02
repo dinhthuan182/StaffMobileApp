@@ -122,8 +122,6 @@ export default function Profile(props) {
                         <Text style = { styles.totalText}>Total : {totalHour} hour</Text>
                     </View>
                 </ScrollView>
-                
-               
             </View>
         ); 
     } else {

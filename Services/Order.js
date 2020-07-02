@@ -23,10 +23,8 @@ export async function getTableDetail(id) {
     } catch (e) {
         
         if (e.response.status == 400) {
-            console.log("You have no schedules or you are not check in. \nCan't see the details")
             return "You have no schedules or you are not check in. \nCan't see the details";
         }
-        console.log("Please check your network connection.")
         return "Please check your network connection.";
     }
 }
@@ -59,7 +57,6 @@ export async function postOrders(table_id, orders) {
 
         let res = await axios.post(C.POST_ORDER(table_id), formdata);
         const tableDetail = JSON.parse(JSON.stringify(res.data))
-
         return tableDetail;
     }catch (e) {
         return null;
