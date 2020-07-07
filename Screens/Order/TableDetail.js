@@ -37,6 +37,9 @@ export default function TableDetail(props) {
 
     useEffect(() => {
         navigation.setParams({ submit: submitOrders, outTable: onOutTable });
+    }, [orderList])
+
+    useEffect(() => {
         updateOrder()
     }, [newOrder])
 
@@ -51,7 +54,7 @@ export default function TableDetail(props) {
                 submitFlag = true
             }
             
-           let p = new PostProduct(item.id, item.quantity, (typeof item.note == 'undefined' || item.note == null) ? "Note": item.note);
+           let p = new PostProduct(item.id, item.quantity, (typeof item.note === 'undefined' || item.note == null) ? "Note": item.note);
            postList.push(p);
         });
         
@@ -88,7 +91,7 @@ export default function TableDetail(props) {
     }
 
     const updateOrder = () => {
-        if (typeof newOrder != 'undefined') {
+        if (typeof newOrder !== 'undefined') {
             var updatedOrders = orderList;
             var flag = false;
             newOrder.forEach(element => {
@@ -97,7 +100,7 @@ export default function TableDetail(props) {
                 updatedOrders.forEach(item => {
                     if (item.id == element.id) {
                         flag = true
-                        if ( typeof item.isNew == 'undefined') {
+                        if ( typeof item.isNew === 'undefined') {
                             item.oldQuantity = item.quantity;
                             item.isUpdate = true;
                         }
@@ -120,11 +123,10 @@ export default function TableDetail(props) {
         switch (parseInt(state)) {
             // delete
             case 0:
-                const newList = orderList.filter(item => {
+                const deletedList = orderList.filter(item => {
                     return item.id != id
                 });
-                
-                setOrderList(newList);
+                setOrderList(deletedList);
                 break;
             // new
             case 1:
@@ -141,7 +143,7 @@ export default function TableDetail(props) {
                 const updateOrders = orderList.map(item => {
                     if (item.id == id) {
                         
-                        if ( typeof item.isUpdate == 'undefined') {
+                        if ( typeof item.isUpdate === 'undefined') {
                             item.isUpdate = true
                             item.oldQuantity = item.quantity
                         }

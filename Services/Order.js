@@ -46,6 +46,7 @@ export async function getMenus() {
 }
 
 export async function postOrders(table_id, orders) {
+    console.log(orders)
     try {
         let formdata = new FormData();
         for(let [i, product] of orders.entries()) {

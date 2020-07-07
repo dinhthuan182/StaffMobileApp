@@ -27,7 +27,9 @@ export default function Tables(props) {
     var channel = pusher.subscribe(C.PUSHER_APP_CHANNEL);
     
     useEffect(() => {
+        setLoading(true)
         fetchData()
+        setLoading(false)
         channel.bind(C.PUSHER_GET_TABLES_EVENT, function(data) {
             fetchData();
         });
@@ -37,12 +39,12 @@ export default function Tables(props) {
     }, [])
 
     const fetchData = async () => {
-        setLoading(true)
+        
         let allTable = await api.getTables();
         if (allTable != null) {
             setTables(allTable)
         }
-        setLoading(false)
+        
     }
 
     const moveToDetail = async (id) => {

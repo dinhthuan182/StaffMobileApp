@@ -3,7 +3,7 @@
     "name": "StaffMobileApp",
     "slug": "StaffMobileApp",
     "version": "1.0.2",
-    "icon": "./assets/app_logo.png",
+    "icon": "./assets/cafe_logo.png",
     "ios": {
       "bundleIdentifier": "com.tdtu.project2",
       "buildNumber": "1.0.0"

@@ -13,28 +13,28 @@ export default function ProductCell(props) {
 
     const { product, onUpdateOrder } = props;
 
-    const [stateChange, setStateChange] = useState(typeof product.isNew != 'undefined' ? 2 : 
-                                                    typeof product.isUpdate != 'undefined' ? 1: 0)
+    const [stateChange, setStateChange] = useState(typeof product.isNew !== 'undefined' ? 2 : 
+                                                    typeof product.isUpdate !== 'undefined' ? 1: 0)
     const [quantity, setQuantity] = useState(0);
     const [noteText, setNoteText] = useState(product.note)
 
     useEffect(() => {
         setQuantity(product.quantity)
-        setStateChange(typeof product.isNew != 'undefined' ? 2 : 
-        typeof product.isUpdate != 'undefined' ? 1: 0)
+        setStateChange(typeof product.isNew !== 'undefined' ? 2 : 
+        typeof product.isUpdate !== 'undefined' ? 1: 0)
     }, [product.quantity, product.isUpdate, product.isNew, product.oldQuantity, noteText])
 
     const handleMinus = () => {
         const newValue = quantity - 1;
         
-        if (typeof product.isNew != 'undefined') {
+        if (typeof product.isNew !== 'undefined') {
             if (newValue > 0) {
                 setQuantity(newValue)
                 onUpdateOrder(product.id, newValue, "", 1);
             } else {
                 onUpdateOrder(product.id, 0, "", 0);
             }
-        } else if (typeof product.isUpdate != 'undefined') {
+        } else if (typeof product.isUpdate !== 'undefined') {
             if (newValue > product.oldQuantity) {
                 setQuantity(newValue);
                 onStateChange(1);
@@ -83,8 +83,8 @@ export default function ProductCell(props) {
     }
 
     const onStateChange = (value) => {
-        if (typeof product.isNew == 'undefined') {
-            if (typeof product.isUpdate != 'undefined' && quantity > product.oldQuantity) {
+        if (typeof product.isNew === 'undefined') {
+            if (typeof product.isUpdate !== 'undefined' && quantity > product.oldQuantity) {
                 setStateChange(1);
             } else {
                 setStateChange(0);
