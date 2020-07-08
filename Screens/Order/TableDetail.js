@@ -59,7 +59,6 @@ export default function TableDetail(props) {
         });
         
         if (orderList.length != product_list.length) {
-            postList = orderList
             submitFlag = true
         }
 
