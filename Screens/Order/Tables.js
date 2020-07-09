@@ -54,8 +54,8 @@ export default function Tables(props) {
         })
 
         let detail = await api.getTableDetail(id);
-
-        if (typeof detail === 'string') {
+        setLoading(false)
+        if (typeof detail == 'string') {
             Alert.alert(
                 "Notification",
                 detail,
@@ -65,7 +65,6 @@ export default function Tables(props) {
                 { cancelable: false }
             );
         } else {
-            setLoading(false)
             navigate('TableDetail', {
                 titleHeader: `Table ${item[0].name}`,
                 table: item[0],
@@ -73,7 +72,7 @@ export default function Tables(props) {
             })
         }
         
-        setLoading(false)
+       
     }
     if (state.isLoggedIn) {
         return (

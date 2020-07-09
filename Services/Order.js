@@ -21,6 +21,7 @@ export async function getTableDetail(id) {
         const tableDetail = JSON.parse(JSON.stringify(res.data))
         return tableDetail;
     } catch (e) {
+        
         if (e.response.status == 400) {
             return "You have no schedules or you are not check in. \nCan't see the details";
         }

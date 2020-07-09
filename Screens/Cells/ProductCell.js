@@ -52,7 +52,7 @@ export default function ProductCell(props) {
             }
         } else if (user.role == "Admin" || user.role == "Manager") {
             Alert.alert(
-                "Warning",
+                "Notification",
                 "This product has been ordered.\nAre you sure you want to decrease this product?",
                 [
                     {
@@ -99,7 +99,7 @@ export default function ProductCell(props) {
     const handleDelete = () => {
         if ((user.role == "Admin") || (user.role == "Manager")) {
             Alert.alert(
-                "Warning",
+                "Notification",
                 "This product has been ordered.\nAre you sure you want to delete this product?",
                 [
                   {

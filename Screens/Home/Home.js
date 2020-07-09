@@ -38,7 +38,7 @@ export default function Home(props) {
             })
         } else {
             Alert.alert(
-                "Warning",
+                "Notification",
                 "Please check your network connection.",
                 [
                     { text: "Ok"}
