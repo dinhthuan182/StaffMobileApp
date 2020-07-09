@@ -2,7 +2,7 @@
   "expo": {
     "name": "StaffMobileApp",
     "slug": "StaffMobileApp",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "icon": "./assets/cafe_logo.png",
     "ios": {
       "bundleIdentifier": "com.tdtu.project2",

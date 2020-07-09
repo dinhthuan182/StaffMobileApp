@@ -58,8 +58,7 @@ export default function TableDetail(props) {
            postList.push(p);
         });
         
-        if (orderList.length != product_list.length) {
-            postList = orderList
+        if (orderList.length != product_list.length && submitFlag == false) {
             submitFlag = true
         }
 
